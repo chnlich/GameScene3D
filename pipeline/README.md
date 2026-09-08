@@ -31,6 +31,10 @@ reasoning, while `true` (the default) preserves the gateway's reasoning output.
 Numeric bound keywords (`minimum`, `maximum` and their exclusive variants) are
 stripped from the GLM wire schema because the gateway's structured decoder
 mishandles them; correctness is enforced by pydantic validation after the call.
+Setting `structured_decoding: false` (default `true`) instead embeds the schema
+in the prompt and sends no `response_format`, because the gateway's guided
+decoding also corrupts bound-carrying numbers and placeholder-fills optional
+list fields.
 Copy `config.example.yaml`
 to private local storage and set explicit executable and owner-only key-file paths.
 `pipeline.runner.preflight(config_path)` returns public-safe local readiness

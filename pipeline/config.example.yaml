@@ -14,6 +14,8 @@ glm:
   timeout_seconds: 300
   max_tokens: 65536
   enable_thinking: false
+  # false embeds the schema in the prompt because the gateway's guided decoding mishandles numeric bounds and optional lists.
+  structured_decoding: false
 meshy:
   endpoint: https://api.staging.meshy.ai
   key_file: /REPLACE_WITH_PRIVATE_KEY_FILE

@@ -34,6 +34,7 @@ class GlmConfig(Record):
     timeout_seconds: Positive
     max_tokens: Positive
     enable_thinking: bool = True
+    structured_decoding: bool = True
 
 
 class Spending(Record):
