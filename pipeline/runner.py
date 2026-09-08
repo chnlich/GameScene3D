@@ -342,6 +342,24 @@ def generate(request: dict, output_dir: Path, on_progress: Callable[[dict], None
             if aspect is not None and abs(corrected.camera.aspect_ratio-aspect) > 1e-6:
                 raise ValueError('Correction changed authoritative image aspect')
             if corrected.landmarks != scene.landmarks:
+                model_landmarks = {(landmark.asset_id, landmark.point): landmark for landmark in corrected.landmarks}
+                kept_landmarks = {(landmark.asset_id, landmark.point): landmark for landmark in scene.landmarks}
+                edits = []
+                for key in sorted(model_landmarks.keys() | kept_landmarks.keys()):
+                    model = model_landmarks.get(key)
+                    kept = kept_landmarks.get(key)
+                    if model is not None and kept is not None:
+                        if model.image_xy == kept.image_xy:
+                            continue
+                        edits.append({'asset_id': key[0], 'point': key[1],
+                                      'model_image_xy': list(model.image_xy), 'kept_image_xy': list(kept.image_xy)})
+                    elif model is not None:
+                        edits.append({'asset_id': key[0], 'point': key[1], 'model_image_xy': list(model.image_xy)})
+                    else:
+                        edits.append({'asset_id': key[0], 'point': key[1], 'kept_image_xy': list(kept.image_xy)})
+                runtime.record({'purpose': 'discarded_landmark_edits', 'edits': edits})
+                corrected = corrected.model_copy(update={'landmarks': scene.landmarks})
+            if corrected.landmarks != scene.landmarks:
                 raise ValueError('Correction changed observed reprojection targets')
             previous_assets = {asset.id: asset for asset in scene.assets}
             regenerate = set(inspection.regenerate_assets)
