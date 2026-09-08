@@ -161,16 +161,32 @@ def _assets(scene, image, provider, concurrency, existing, regenerate):
 
 
 def _compose(scene, assets, config, runtime, index):
+    job = {'scene': scene.model_dump(mode='json'), 'assets': assets,
+           'blender': config.blender.model_dump(exclude={'executable'}, mode='json'),
+           'implementation': {name: hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
+                              for name in ('blender_scene.py', 'rig.py', 'pose.py')}}
+    if index == 0:
+        for previous in (runtime.output / 'iterations').glob('*/*/scene.json'):
+            if (json.loads(previous.read_text()) == job and
+                    all(previous.with_name(name).exists() for name in
+                        ('checks.json', 'preview.png', 'scene.glb', 'scene.blend'))):
+                runtime.record({'purpose': 'reuse unchanged composition',
+                                'source': previous.relative_to(runtime.output).as_posix()})
+                _comparison(runtime.output, previous.parent)
+                return previous.parent, json.loads(previous.with_name('checks.json').read_text())
     directory = runtime.output / 'iterations' / runtime.attempt / str(index)
     directory.mkdir(parents=True, exist_ok=True)
-    job = {'scene': scene.model_dump(mode='json'), 'assets': assets,
-           'blender': config.blender.model_dump(exclude={'executable'}, mode='json')}
     write_json(directory / 'scene.json', job)
     script = Path(__file__).with_name('blender_scene.py')
     runtime.process([config.blender.executable, '--background', '--factory-startup', '--python-exit-code', '1',
                      '--python', str(script), '--', 'compose', str(directory / 'scene.json'),
                      str(runtime.output), str(directory)], directory, '', runtime.remaining())
-    original = runtime.output / 'original.png'
+    _comparison(runtime.output, directory)
+    return directory, json.loads((directory / 'checks.json').read_text())
+
+
+def _comparison(output, directory):
+    original = output / 'original.png'
     if original.exists():
         with Image.open(original) as source, Image.open(directory / 'preview.png') as preview:
             reference = source.convert('RGB').resize(preview.size, Image.Resampling.LANCZOS)
@@ -181,7 +197,6 @@ def _compose(scene, assets, config, runtime, index):
             labels.text((12, 10), 'Source image', fill='white')
             labels.text((preview.width + 12, 10), 'Generated iteration - pending inspection', fill='white')
             comparison.save(directory / 'comparison.png')
-    return directory, json.loads((directory / 'checks.json').read_text())
 
 
 def verify_iteration(config_path, output, iteration):
@@ -203,6 +218,7 @@ def verify_iteration(config_path, output, iteration):
                      '--python', str(Path(__file__).with_name('blender_scene.py')), '--', 'verify',
                      str(source / 'scene.json'), str(source), str(destination)],
                     destination, '', runtime.remaining())
+    _comparison(output, source)
     return {'verification': destination.relative_to(output).as_posix() + '/reopen.json',
             'preview': destination.relative_to(output).as_posix() + '/reopen.png',
             'visual_acceptance': 'not evaluated'}
