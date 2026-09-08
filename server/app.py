@@ -203,9 +203,13 @@ def create_app(config: Config, root: Path = ROOT):
     def vendor(reference: str):
         return file_response(root, "node_modules/three/" + reference)
 
+    @app.get("/web/{reference:path}")
+    def web(reference: str):
+        return file_response(root, "web/" + reference)
+
     @app.get("/{reference:path}")
     def ui(reference: str):
-        if reference.split("/", 1)[0] in ("api", "artifacts", "demo", "vendor", "contracts"):
+        if reference.split("/", 1)[0] in ("api", "artifacts", "demo", "vendor", "contracts", "web"):
             raise TaskError(404, "not_found", "Route not found.")
         if not (root / "web/index.html").is_file():
             raise TaskError(503, "ui_not_ready", "Viewer files are not installed yet.")
