@@ -37,6 +37,45 @@
     "changes": "Reference frame copied unmodified; the GLB is a Draco-compressed export."
   },
   {
+    "file": "images/sintel_wall_frame.png",
+    "title": "Girl on the City Wall at Sunset",
+    "category": "Character + environment",
+    "selection": "Astra-refined production",
+    "visible_checks": "Girl seen from behind on the wall top, plain stone column beside her, brick tower at right, birds, empty sunset sky",
+    "bytes": 679057,
+    "sha256": "ef1826fc51ff55b572194a2c38aa8b0b3b7e567b95a6db007f6992b81a2270d3",
+    "dimensions": [
+      1920,
+      818
+    ],
+    "generated_scene": {
+      "title": "Girl on the City Wall at Sunset",
+      "summary": "Recreated from a Sintel frame: character generated with Meshy image-to-3D from frame crops, environment built procedurally in Blender, composition refined interactively. Not an end-to-end pipeline output. The scene contains only what the source frame shows: the mid-ground object is out of focus with unidentifiable species and is rebuilt as a plain stone column; the background is the frame's empty sky with nothing added.",
+      "artifacts": {
+        "glb": "../scenes/wall_scene.glb",
+        "original": "images/sintel_wall_frame.png",
+        "preview": "../scenes/wall_scene_hero.png",
+        "evidence": "../scenes/wall_scene_evidence.json",
+        "blend": null,
+        "manifest": null
+      },
+      "camera": null,
+      "assumptions": [
+        "The mid-ground object is out of focus in the source frame with unidentifiable species; it is rebuilt as a plain stone column.",
+        "The background is the source frame's empty sky; no structures absent from the original were added.",
+        "The GLB embeds a build camera aligned by eye to the source framing; the viewer reset returns to the default view, not a verified source-image camera."
+      ],
+      "elapsed_seconds": null,
+      "cost_usd": null,
+      "cost_note": "Meshy usage recorded as credits (4 tasks) in the private build session; not USD."
+    },
+    "source": "Sintel (Blender open movie), 1080p master frame 7280, media.xiph.org mirror",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "attribution": "Sintel © Blender Foundation | durian.blender.org",
+    "changes": "Source frame copied unmodified. The 3D scene is a Meshy-assisted Blender recreation; earlier iterations adding a city tower forest or an invented creature reading of the out-of-focus object were removed on source-fidelity grounds."
+  },
+  {
     "file": null,
     "prompt": "A traveler in a blue cloak stands at the left end of a stone bridge, body facing the bridge's center, holding a warm yellow lantern in the right hand. The stone bridge crosses a narrow stream; on the right bank stands a low, round stone tower, with two layers of hills in the distance. At dusk, cool blue ambient light contrasts with the lantern's warm glow. Keep one character, the lantern, a complete stone bridge, the stream and the stone tower; build a static 3D scene that can be viewed by rotating around it. The initial camera looks from the front side obliquely above the bridge, keeping the character, the bridge and the stone tower in frame.",
     "title": "Traveler on a Stone Bridge at Dusk",

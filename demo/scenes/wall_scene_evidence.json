@@ -1,0 +1,54 @@
+{
+  "title": "File verification for the Sintel wall recreation",
+  "artifact": "wall_scene.glb",
+  "sha256": "15d5f95165fbc3eabad4f7d85c3152dfcd7e92ccc8a556b0fc69699c2f5f1707",
+  "bytes": 16463456,
+  "provenance": "Sintel (Blender open movie), 1080p master frame 7280, copied byte-for-byte from the public media.xiph.org mirror. License CC BY 3.0 with the required attribution, verbatim: Sintel © Blender Foundation | durian.blender.org",
+  "production": "The 3D scene is a production recreation, not an end-to-end pipeline output: the character was generated with Meshy image-to-3D from crops of the source frame, the environment (wall, stone column, brick tower, leaning beams, birds, crenellations, sky) was built procedurally in Blender, and the composition was refined interactively with Astra assistance.",
+  "current_file_checks": {
+    "glb_version": 2,
+    "header_length_matches_file": true,
+    "mesh_count": 34,
+    "material_count": 13,
+    "camera_count": 1,
+    "external_asset_uris": [],
+    "extensions_used": [
+      "KHR_draco_mesh_compression",
+      "KHR_materials_specular"
+    ],
+    "extensions_required": [
+      "KHR_draco_mesh_compression"
+    ]
+  },
+  "input_frame": {
+    "file": "sintel_wall_frame.png",
+    "sha256": "ef1826fc51ff55b572194a2c38aa8b0b3b7e567b95a6db007f6992b81a2270d3",
+    "bytes": 679057,
+    "dimensions": [1920, 818],
+    "note": "Source frame copied unmodified; the pixels are a byte copy of the survey pick from the media.xiph.org mirror."
+  },
+  "preview_image": {
+    "file": "wall_scene_hero.png",
+    "sha256": "ace9d13575ebf9f5f43fe3a81739299abcc259733885664bfd336ca6437211b9",
+    "bytes": 1533696,
+    "dimensions": [1920, 818],
+    "note": "Hero render used as the catalog card preview."
+  },
+  "central_object": "The central mid-ground object is out of focus in the source frame and its species is unidentifiable; it was rebuilt as a plain weathered stone column. Earlier interpretations of this object that added subjects absent from the frame were removed on source-fidelity grounds.",
+  "background": "The scene contains only what the source frame shows: the girl from behind on the wall top, the plain stone column beside her, the brick tower with leaning beams at the right edge, birds, crenellations, and the frame's empty golden sunset sky. Nothing was added to the background.",
+  "verification": {
+    "summary": "A fresh Blender 5.2.1 LTS process reopened the saved scene file for verification: all textures are packed inline with no missing external images, and the exported web GLB was reimported and verified in a fresh Blender process.",
+    "blender_reopen": true,
+    "textures_packed": true,
+    "missing_external_images": 0,
+    "reimport_verified_web_glb": true
+  },
+  "camera_note": "The GLB embeds one camera, an eye-aligned build camera used while composing the scene; it is not a verified source-image camera. The catalog camera field is null and the viewer's reset returns to the default view.",
+  "validation_limits": [
+    "Visual acceptance of the published web render is still pending human review; the recorded verification covers the Blender reopen, texture packing, and the GLB reimport.",
+    "Meshy usage is recorded as credits (4 tasks) in the private build session, not USD; cost_usd is null.",
+    "The original high-poly build evidence is retained in the private build session, not in this repository."
+  ],
+  "elapsed_seconds": null,
+  "cost_usd": null
+}
