@@ -1,0 +1,36 @@
+# Copy to a private local file and provide actual executable/key paths there.
+codex:
+  executable: codex
+  model: gpt-6-astra
+  reasoning: high
+  concurrency: 2
+  timeout_seconds: 300
+meshy:
+  endpoint: https://api.staging.meshy.ai
+  key_file: /REPLACE_WITH_PRIVATE_KEY_FILE
+  model: meshy-7
+  concurrency: 2
+  poll_seconds: 20
+  request_timeout_seconds: 90
+  remesh_route: /openapi/v2/remesh
+  rig_target_polycount: 300000
+  spending:
+    authorization: null
+    unlimited_authorized: false
+    max_credits: 0
+    max_submissions: 0
+    # Set caps to null only with unlimited_authorized: true and explicit authorization.
+    # Conservative bounds apply to capped credit budgets.
+    image_credits_upper_bound: 100
+    preview_credits_upper_bound: 100
+    refine_credits_upper_bound: 100
+    rig_credits_upper_bound: 100
+    remesh_credits_upper_bound: 100
+blender:
+  executable: blender
+  resolution_height: 720
+  samples: 32
+  pose_tolerance_meters: 0.15
+  reprojection_tolerance: 0.15
+deadline_seconds: 3600
+correction_count: 2
