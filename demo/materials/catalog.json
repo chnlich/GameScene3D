@@ -1,5 +1,42 @@
 [
   {
+    "file": "images/starcraft_clash_ref.png",
+    "title": "StarCraft II two-character duel",
+    "category": "Two-character action",
+    "selection": "Featured demo",
+    "visible_checks": "Two characters, red and green light blades, ruined environment",
+    "bytes": 578081,
+    "sha256": "401d6939eaf06c33b2368465c1582893800b8d7ec389e23644f19c7bfc162fef",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "generated_scene": {
+      "title": "Two-character duel · ruins atmosphere version",
+      "summary": "User-selected demo example: a static 3D scene built from screened Meshy assets reworked in Blender; not an end-to-end output of the current automated pipeline.",
+      "artifacts": {
+        "glb": "../scenes/duel_atmosphere.glb",
+        "original": "images/starcraft_clash_ref.png",
+        "preview": "../scenes/duel_atmosphere_hero.png",
+        "evidence": "../scenes/duel_atmosphere_evidence.json",
+        "blend": null,
+        "manifest": null
+      },
+      "camera": null,
+      "assumptions": [
+        "The GLB contains no camera; the viewer's reset returns to the default view, not the source-image camera."
+      ],
+      "elapsed_seconds": null,
+      "cost_usd": null,
+      "cost_note": "No reliable generation cost records exist; cost is unknown."
+    },
+    "source": "Reference frame from the StarCraft II opening cinematic (YouTube RDp2JCorZLA)",
+    "license": "Explicitly selected by the user for this demo; public redistribution permission not separately verified",
+    "license_url": null,
+    "attribution": "The scene is a static recreation of StarCraft II cinematic imagery; character models were generated with Meshy, screened, and reworked — not original game assets",
+    "changes": "Reference frame copied unmodified; the GLB is a Draco-compressed export."
+  },
+  {
     "file": "images/user_test_duel.png",
     "title": "Two-character light-blade duel",
     "category": "Two-character action",
@@ -157,42 +194,5 @@
     "license_evidence": "https://media.xiph.org/sintel/README.txt",
     "attribution": "Sintel © Blender Foundation | durian.blender.org",
     "changes": "Original frame unmodified; PNG bytes copied verbatim from the mirror."
-  },
-  {
-    "file": "images/starcraft_clash_ref.png",
-    "title": "StarCraft II two-character duel",
-    "category": "Two-character action",
-    "selection": "Featured demo",
-    "visible_checks": "Two characters, red and green light blades, ruined environment",
-    "bytes": 578081,
-    "sha256": "401d6939eaf06c33b2368465c1582893800b8d7ec389e23644f19c7bfc162fef",
-    "dimensions": [
-      1920,
-      1080
-    ],
-    "generated_scene": {
-      "title": "Two-character duel · ruins atmosphere version",
-      "summary": "User-selected demo example: a static 3D scene built from screened Meshy assets reworked in Blender; not an end-to-end output of the current automated pipeline.",
-      "artifacts": {
-        "glb": "../scenes/duel_atmosphere.glb",
-        "original": "images/starcraft_clash_ref.png",
-        "preview": "../scenes/duel_atmosphere_hero.png",
-        "evidence": "../scenes/duel_atmosphere_evidence.json",
-        "blend": null,
-        "manifest": null
-      },
-      "camera": null,
-      "assumptions": [
-        "The GLB contains no camera; the viewer's reset returns to the default view, not the source-image camera."
-      ],
-      "elapsed_seconds": null,
-      "cost_usd": null,
-      "cost_note": "No reliable generation cost records exist; cost is unknown."
-    },
-    "source": "Reference frame from the StarCraft II opening cinematic (YouTube RDp2JCorZLA)",
-    "license": "Explicitly selected by the user for this demo; public redistribution permission not separately verified",
-    "license_url": null,
-    "attribution": "The scene is a static recreation of StarCraft II cinematic imagery; character models were generated with Meshy, screened, and reworked — not original game assets",
-    "changes": "Reference frame copied unmodified; the GLB is a Draco-compressed export."
   }
 ]
