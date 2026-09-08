@@ -105,7 +105,10 @@ class Config(Record):
 class Transform(Record):
     position: Vec3
     rotation_degrees: Vec3
-    scale: tuple[Positive, Positive, Positive]
+    scale: Annotated[tuple[Positive, Positive, Positive],
+                     Field(description="The asset's full size along X/Y/Z in meters; every component must be "
+                                       "greater than 0, and flat objects use their thin real dimension "
+                                       "(for example a 0.1 m slab thickness), never 0")]
 
 
 class Pose(Record):
@@ -123,7 +126,8 @@ class Asset(Record):
     visible_evidence: list[str]
     uncertain_completion: list[str]
     reference_crop: tuple[float, float, float, float] | None
-    height_meters: Positive
+    height_meters: Annotated[Positive, Field(description="The asset's overall bounding height in meters, "
+                                                          "always greater than 0")]
     articulated: bool
     transform: Transform
     pose: list[Pose]
