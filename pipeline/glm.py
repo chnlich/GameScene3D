@@ -35,36 +35,40 @@ def _first_json_object(content):
         stripped = text.rstrip()
         if stripped.endswith('```'):
             text = stripped[:-3]
-    start = 0
-    while True:
-        start = text.find('{', start)
-        if start < 0:
-            return None
-        depth = 0
-        quoted = False
-        escaped = False
-        for index in range(start, len(text)):
-            char = text[index]
-            if quoted:
-                if escaped:
-                    escaped = False
-                elif char == '\\':
-                    escaped = True
-                elif char == '"':
-                    quoted = False
+    start = text.find('{')
+    if start < 0:
+        return None
+    depth = 0
+    quoted = False
+    escaped = False
+    end = -1
+    for index in range(start, len(text)):
+        char = text[index]
+        if quoted:
+            if escaped:
+                escaped = False
+            elif char == '\\':
+                escaped = True
             elif char == '"':
-                quoted = True
-            elif char == '{':
-                depth += 1
-            elif char == '}':
-                depth -= 1
-                if depth == 0:
-                    candidate = text[start:index + 1]
-                    try:
-                        return json.loads(candidate)
-                    except json.JSONDecodeError:
-                        break
-        start += 1
+                quoted = False
+        elif char == '"':
+            quoted = True
+        elif char == '{':
+            depth += 1
+        elif char == '}':
+            depth -= 1
+            if depth == 0:
+                end = index + 1
+                break
+    if end < 0:
+        return None
+    try:
+        result = json.loads(text[start:end])
+    except json.JSONDecodeError:
+        return None
+    if '{' in text[end:]:
+        return None
+    return result
 
 
 class Glm:
