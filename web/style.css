@@ -478,12 +478,46 @@ body>footer {
   padding:24px;
   text-align:center
 }
-.viewport {
-  position:absolute;
-  inset:0;
-  overflow:hidden
+.crumbs {
+  margin:0 0 10px;
+  font-size:14px
 }
-.viewport-status {
+.scene-head {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:14px
+}
+.scene-head h1 {
+  font-size:clamp(22px,2.8vw,34px);
+  margin:6px 0 4px
+}
+.scene-head p {
+  margin:0;
+  font-size:14px;
+  color:#a6b8b0;
+  overflow-wrap:anywhere
+}
+.stage-wrap {
+  display:grid;
+  grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);
+  gap:16px;
+  align-items:stretch
+}
+.stage {
+  position:relative;
+  height:min(74vh,780px);
+  min-height:420px;
+  background:#090f12;
+  border:1px solid #34433e;
+  border-radius:12px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center
+}
+.stage-status {
   position:absolute;
   z-index:1;
   inset:0;
@@ -496,15 +530,17 @@ body>footer {
   color:#b9cac1;
   pointer-events:none
 }
-.viewport-status.error {
+.stage-status.error {
   color:#ffc3b5
 }
-.canvas-host {
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center
+.stage-wrap .media {
+  height:100%
+}
+.stage-wrap .media-body {
+  height:auto
+}
+.scene-details {
+  margin-top:16px
 }
 .view-note {
   margin:12px 2px 0;
@@ -639,6 +675,13 @@ body>footer {
   }
   .entry-media {
     grid-template-columns:1fr
+  }
+  .stage-wrap {
+    grid-template-columns:1fr
+  }
+  .stage {
+    height:56vh;
+    min-height:340px
   }
   .media-body {
     height:380px

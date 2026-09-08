@@ -1,3 +1,11 @@
+export const CONTROLS_NOTE = ' Drag to rotate · scroll to zoom · right-drag to pan; touch: one finger rotates, two fingers zoom and pan.';
+
+export function cameraNote(camera) {
+  return camera === null
+    ? 'Default view — no verified source-image camera exists for this prerecorded scene.'
+    : 'Source-image camera applied in the GLB world coordinates.';
+}
+
 export function metrics(result) {
   const elapsed = result.elapsed_seconds === null ? 'Time unknown' : `${result.elapsed_seconds.toFixed(1)} s elapsed`;
   const cost = result.cost_usd === null ? 'Cost unknown' : `Cost $${result.cost_usd.toFixed(4)}`;

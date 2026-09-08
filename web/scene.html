@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101719">
+  <title>GameFrame3D · Scene View</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/web/style.css">
+  <script type="module" src="/web/bootstrap.mjs"></script>
+</head>
+<body data-page="scene">
+  <header><a class="brand" href="/">GameFrame<span>3D</span></a>
+    <nav class="site-nav" aria-label="Pages">
+      <a href="/">Created Scenes</a>
+      <a href="/web/studio.html">Interactive Studio</a>
+    </nav>
+  </header>
+  <main>
+    <p id="page-error" class="error" role="alert" hidden></p>
+    <p class="crumbs"><a href="/">← Back to all scenes</a></p>
+    <div class="scene-head">
+      <div>
+        <span class="tag">Prerecorded scene</span>
+        <h1 id="scene-title"></h1>
+        <p id="scene-desc"></p>
+      </div>
+      <div class="entry-actions"><button id="reset-view" type="button" hidden></button></div>
+    </div>
+    <div class="stage-wrap">
+      <div id="stage" class="stage"><p id="stage-status" class="stage-status">Loading the 3D scene…</p></div>
+      <div id="original-slot"></div>
+    </div>
+    <p id="view-note" class="view-note"></p>
+    <section class="scene-details">
+      <div id="provenance-slot"></div>
+      <div id="assumptions-slot"></div>
+      <div id="foot-slot"></div>
+    </section>
+  </main>
+  <footer>GameFrame3D · 3D results include inferred completions; they are not evidence of unseen detail.</footer>
+</body>
+</html>

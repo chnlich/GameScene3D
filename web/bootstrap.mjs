@@ -8,7 +8,7 @@ try {
   importMap.textContent = JSON.stringify({ imports: config.import_map });
   document.head.append(importMap);
   const page = document.body.dataset.page;
-  const module = page === 'gallery' ? './gallery.mjs' : page === 'studio' ? './app.mjs' : null;
+  const module = page === 'gallery' ? './gallery.mjs' : page === 'studio' ? './app.mjs' : page === 'scene' ? './scene.mjs' : null;
   if (module === null) throw new Error(`Unknown page: ${page ?? '(unset)'}`);
   const { start } = await import(module);
   await start(config);
