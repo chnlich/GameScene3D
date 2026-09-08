@@ -94,7 +94,9 @@ def normalize(objects, meshes, asset):
     if height <= 0:
         raise RuntimeError('Generated asset has zero height')
     bottom = Vector(((lo.x+hi.x)/2, (lo.y+hi.y)/2, lo.z))
-    matrix = transform_matrix(asset['transform']) @ Matrix.Scale(asset['height_meters']/height, 4) @ Matrix.Translation(-bottom)
+    # Meshy front is glTF +Z, imported as Blender -Y; internal assets face +Y.
+    matrix = (transform_matrix(asset['transform']) @ Matrix.Rotation(math.pi, 4, 'Z') @
+              Matrix.Scale(asset['height_meters']/height, 4) @ Matrix.Translation(-bottom))
     for o in objects:
         if o.parent not in objects:
             o.matrix_world = matrix @ o.matrix_world

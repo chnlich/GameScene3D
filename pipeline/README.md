@@ -56,12 +56,18 @@ and geometric checks. Successful artifacts include packed `scene.blend`, embedde
 relative to the output directory; only the service resolves URLs. Keep private
 configuration outside that directory.
 
+Imported Meshy assets are aligned from glTF +Z front (Blender -Y) to the
+internal +Y-facing convention before the analyzed transform is applied.
 Internal geometry uses Blender Z-up meters. Blender exports with glTF Y-up, and
 `Camera.gltf()` applies the same `(x, y, z) -> (x, z, -y)` conversion to camera
 position, target and up. Source aspect comes from decoded image dimensions;
 text-only aspect comes from the generated composition. Projection and normalized
 observed landmarks come from scene analysis, with measured reprojection errors.
 
+Models above the staging rigging face limit are remeshed to the configured
+polygon target before rigging; the original textured model remains the final
+surface source. Staging v2 remesh submissions return a task object, and the
+verified v1 read representation supplies download URLs for the same task ID.
 Rig selection compares original and rigged textures and UVs. Differing materials
 use original UV/PBR with transferred weights, retaining the original 3.5%-of-height
 95th-percentile surface-distance rejection threshold. Pose targets and achieved

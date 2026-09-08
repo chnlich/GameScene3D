@@ -4,7 +4,7 @@ import json
 import shutil
 import subprocess
 import time
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Callable
 
@@ -127,8 +127,21 @@ Return only the schema-conforming scene description.'''
 
 def _assets(scene, image, provider, concurrency):
     with ThreadPoolExecutor(max_workers=concurrency) as executor:
-        tasks = [(asset.id, executor.submit(provider.asset, asset, image)) for asset in scene.assets]
-        return {identity: future.result() for identity, future in tasks}
+        tasks = {executor.submit(provider.asset, asset, image): asset for asset in scene.assets}
+        results = {}
+        for future in as_completed(tasks):
+            asset = tasks[future]
+            try:
+                result = future.result()
+            except Exception as error:
+                provider.runtime.record({'purpose': 'required asset', 'asset_id': asset.id, 'failure': clean(str(error))})
+                for pending in tasks:
+                    pending.cancel()
+                raise
+            results[asset.id] = result
+            write_json(provider.runtime.output / 'assets' / asset.id / (digest(result) + '.json'),
+                       {'asset': asset.model_dump(mode='json'), 'result': result})
+        return results
 
 
 def _compose(scene, assets, config, runtime, index):

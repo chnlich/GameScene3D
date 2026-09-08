@@ -122,12 +122,16 @@ class Meshy:
                     self._reserve(directory, route, payload, bound)
                     response = self._request(route, payload)
                     write_json(receipt, response)
-                task_id = response['result']
+                # Staging v2 remesh returns the task object directly. Its v1 read
+                # representation exposes the same ID with model_urls for downloads.
+                task_id = response['id'] if route == '/openapi/v2/remesh' else response['result']
                 if not isinstance(task_id, str) or not task_id or '/' in task_id:
                     raise RuntimeError('Meshy submission did not return a task ID; reconcile receipt')
                 call['task_id'] = task_id
+                poll_route = '/openapi/v1/remesh' if route == '/openapi/v2/remesh' else route
+                call['poll_route'] = poll_route
                 while True:
-                    result = self._request(route + '/' + task_id, None)
+                    result = self._request(poll_route + '/' + task_id, None)
                     write_json(directory / 'task.json', result)
                     with (directory / 'polls.jsonl').open('a') as stream:
                         stream.write(json.dumps(clean({'at': timestamp(), 'elapsed_seconds': time.monotonic()-started, 'response': result})) + '\n')
@@ -205,9 +209,13 @@ class Meshy:
             # Staging rigging rejects inputs above 320,000 faces; preserve the original
             # textured surface and simplify only the provider's skeleton source.
             if faces > 320000:
+                remesh_payload = {'input_task_id': task_id,
+                                  'target_polycount': self.config.rig_target_polycount,
+                                  'topology': 'triangle'}
+                if self.config.remesh_route == '/openapi/v1/remesh':
+                    remesh_payload['target_formats'] = ['glb']
                 rig_input_id, remesh_result, remesh_dir = self.task(self.config.remesh_route,
-                    {'input_task_id': task_id, 'target_polycount': self.config.rig_target_polycount,
-                     'topology': 'triangle', 'target_formats': ['glb']}, budget.remesh_credits_upper_bound)
+                    remesh_payload, budget.remesh_credits_upper_bound)
                 remeshed = remesh_dir / 'model.glb'
                 self.download(remesh_result['model_urls']['glb'], remeshed)
                 remeshed_faces = triangle_count(remeshed)
