@@ -6,6 +6,7 @@ const $ = id => document.getElementById(id);
 
 function stageFail(message) {
   const status = $('stage-status');
+  status.hidden = false;
   status.classList.add('error');
   status.textContent = message;
 }
