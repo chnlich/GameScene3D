@@ -21,3 +21,7 @@ __pycache__/
 /artifacts/
 /outputs/
 *.log
+
+# Local server configuration and test cache
+/config.yaml
+.pytest_cache/

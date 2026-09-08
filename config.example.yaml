@@ -1,0 +1,10 @@
+host: 127.0.0.1
+port: 8765
+data_dir: runtime/jobs
+generation_config: pipeline/config.yaml
+max_concurrency: 1
+max_queued: 2
+max_upload_bytes: 10485760
+max_request_bytes: 11534336
+max_prompt_chars: 12000
+max_image_pixels: 25000000
