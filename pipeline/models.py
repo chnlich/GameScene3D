@@ -106,9 +106,9 @@ class Transform(Record):
     position: Vec3
     rotation_degrees: Vec3
     scale: Annotated[tuple[Positive, Positive, Positive],
-                     Field(description="The asset's full size along X/Y/Z in meters; every component must be "
-                                       "greater than 0, and flat objects use their thin real dimension "
-                                       "(for example a 0.1 m slab thickness), never 0")]
+                     Field(description="A dimensionless relative multiplier applied after height normalization; "
+                                       "three strictly positive components, [1, 1, 1] means no scaling, and flat "
+                                       "objects may use a small thin multiplier such as 0.1 but never 0")]
 
 
 class Pose(Record):
@@ -126,8 +126,8 @@ class Asset(Record):
     visible_evidence: list[str]
     uncertain_completion: list[str]
     reference_crop: tuple[float, float, float, float] | None
-    height_meters: Annotated[Positive, Field(description="The asset's overall bounding height in meters, "
-                                                          "always greater than 0")]
+    height_meters: Annotated[Positive, Field(description="The asset's standing height in meters that the mesh "
+                                                          "is normalized to BEFORE the transform; strictly positive")]
     articulated: bool
     transform: Transform
     pose: list[Pose]
