@@ -38,9 +38,12 @@ class Glm:
                    "max_tokens": int(self.config.max_tokens),
                    "response_format": {"type": "json_schema", "json_schema": {
                        "name": purpose, "schema": _schema(output_type.model_json_schema())}}}
+        if not self.config.enable_thinking:
+            payload["chat_template_kwargs"] = {"enable_thinking": False}
         call = {"id": call_id, "purpose": purpose, "provider": "GLM gateway", "model": self.config.model,
                 "settings": {"max_tokens": self.config.max_tokens, "timeout_seconds": self.config.timeout_seconds,
-                             "response_format": "json_schema"}, "started_at": timestamp()}
+                             "response_format": "json_schema", "enable_thinking": self.config.enable_thinking},
+                "started_at": timestamp()}
         try:
             request = urllib.request.Request(self.config.endpoint + '/chat/completions',
                                              data=json.dumps(payload).encode(), method='POST',
