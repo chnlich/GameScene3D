@@ -68,7 +68,7 @@ header>span {
   display:flex;
   align-items:center;
   gap:18px;
-  margin:16px 0 30px
+  margin:0 0 20px
 }
 .intro>div {
   flex:1
@@ -91,8 +91,29 @@ h2 {
   color:#a6b8b0;
   font-size:14px
 }
+.service-health {
+  display:flex;
+  align-items:center;
+  gap:18px;
+  margin-bottom:18px
+}
 #health {
-  max-width:280px
+  flex:1;
+  overflow-wrap:anywhere
+}
+#production-tools {
+  margin-top:28px;
+  padding:18px;
+  border:1px solid #34433e;
+  border-radius:10px
+}
+#production-tools>summary {
+  cursor:pointer;
+  font-weight:600
+}
+#production-tools>p {
+  color:#a6b8b0;
+  font-size:14px
 }
 form {
   display:grid;
@@ -306,7 +327,7 @@ canvas {
   gap:15px;
   margin-bottom:18px
 }
-#examples {
+.example-grid {
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
   gap:16px
@@ -370,7 +391,7 @@ body>footer {
   .workspace {
     grid-template-columns:1fr
   }
-  #examples {
+  .example-grid {
     grid-template-columns:1fr 1fr
   }
   #viewport,.reference {
@@ -389,7 +410,7 @@ body>footer {
     padding:16px;
     gap:18px
   }
-  #examples {
+  .example-grid {
     grid-template-columns:1fr
   }
   #viewport,.reference {
@@ -400,10 +421,6 @@ body>footer {
   }
   .intro {
     margin-top:0
-  }
-  .intro #health {
-    max-width:100%;
-    flex:1
   }
   .panel-head button {
     font-size:12px

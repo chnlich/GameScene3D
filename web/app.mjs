@@ -14,6 +14,7 @@ class App {
     this.submitting = false;
     this.trackedJob = null;
     this.examplesSequence = 0;
+    this.examplesLoaded = false;
     this.healthSequence = 0;
     this.viewer = new Viewer($('canvas-host'), config.draco_decoder_path, error => this.sceneError(error));
     $('generate-form').addEventListener('submit', event => {
@@ -68,7 +69,7 @@ class App {
     text('job-status', '准备输入');
     text('job-message', '提交后显示服务器报告的实际步骤。切换输入会停止跟踪上一任务，服务器任务不会被取消。');
     text('scene-title', '三维场景');
-    this.sceneNotice('场景将在这里打开。也可以先体验下方预生成示例。', false);
+    this.sceneNotice('可打开已完成场景旋转查看，或在制作工具中提交新输入。', false);
     text('camera-note', '拖动旋转 · 滚轮缩放 · 右键平移；触屏双指缩放与平移');
     return { id: this.sequence, signal: this.request.signal };
   }
@@ -324,6 +325,7 @@ class App {
     this.inputPending = false;
     try {
       if (example.kind === 'input') {
+        $('production-tools').open = true;
         $('prompt').value = example.input.prompt;
         this.inputPending = example.input.image_url !== null;
         this.updateSubmit();
@@ -361,17 +363,24 @@ class App {
 
   async loadExamples() {
     const sequence = ++this.examplesSequence;
-    text('examples-status', '正在读取示例…');
+    text('examples-status', '正在读取已完成场景…');
     try {
       const examples = await requestJSON('/api/examples', {});
       if (sequence !== this.examplesSequence) return;
-      const cards = examples.map(example => {
+      const sceneCards = [];
+      const inputCards = [];
+      const scenes = [];
+      for (const example of examples) {
         const card = document.createElement('article');
         card.className = 'example';
         const tag = document.createElement('span');
         tag.className = 'tag';
         if (example.kind === 'input') tag.textContent = '输入素材 · 尚未生成';
-        else if (example.kind === 'scene') tag.textContent = '预生成场景';
+        else if (example.kind === 'scene') {
+          if (example.job.status !== 'succeeded') throw new Error('场景示例未包含成功任务');
+          tag.textContent = '已完成 · 预生成场景';
+          scenes.push(example);
+        }
         else throw new Error(`未知示例类型：${example.kind}`);
         const title = document.createElement('h3');
         title.textContent = example.title;
@@ -400,10 +409,21 @@ class App {
         button.textContent = example.kind === 'input' ? '使用此输入' : '打开预生成场景';
         button.addEventListener('click', () => this.selectExample(example));
         card.append(tag, title, description, provenance, button);
-        return card;
-      });
-      $('examples').replaceChildren(...cards);
-      text('examples-status', examples.length === 0 ? '暂时没有示例。' : '输入素材需提交生成；预生成场景可直接打开。');
+        if (example.kind === 'scene') sceneCards.push(card);
+        else inputCards.push(card);
+      }
+      $('examples').replaceChildren(...sceneCards);
+      $('input-examples').replaceChildren(...inputCards);
+      text('examples-status', scenes.length === 0 ? '尚未发布完成场景。可展开制作工具准备输入。' : '已完成的预生成场景，打开即可旋转查看。来源、许可与修订说明见各场景。');
+      text('inputs-status', inputCards.length === 0 ? '暂无候选输入素材。可上传图片或输入文字。' : '选择素材仅准备输入，提交后才会生成新场景。');
+      if (!this.examplesLoaded) {
+        this.examplesLoaded = true;
+        // begin() advances before input decoding or scene loading can yield.
+        if (this.sequence === 0) {
+          if (scenes.length > 0) await this.selectExample(scenes[0]);
+          else this.sceneNotice('尚未发布完成场景。可展开下方制作工具。', false);
+        }
+      }
     } catch (error) {
       console.error(error);
       if (sequence === this.examplesSequence) text('examples-status', `示例列表读取失败：${error.message}`);
