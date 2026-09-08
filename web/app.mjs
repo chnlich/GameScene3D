@@ -11,6 +11,7 @@ class App {
     this.file = null;
     this.previewURL = null;
     this.inputPending = false;
+    this.submitting = false;
     this.trackedJob = null;
     this.examplesSequence = 0;
     this.healthSequence = 0;
@@ -36,6 +37,9 @@ class App {
     $('retry-status').addEventListener('click', () => {
       this.poll(this.trackedJob, { id: this.sequence, signal: this.request.signal });
     });
+    $('retry-scene').addEventListener('click', () => {
+      this.openResult(this.resultJob, { id: this.sequence, signal: this.request.signal });
+    });
     window.addEventListener('pagehide', () => {
       this.request.abort();
       this.viewer.dispose();
@@ -48,7 +52,10 @@ class App {
     this.request = new AbortController();
     this.sequence += 1;
     this.trackedJob = null;
+    this.resultJob = null;
+    this.submitting = false;
     $('retry-status').hidden = true;
+    $('retry-scene').hidden = true;
     this.viewer.clear();
     $('reset-camera').disabled = true;
     $('downloads').replaceChildren();
@@ -70,7 +77,7 @@ class App {
 
   updateSubmit() {
     $('prompt').disabled = this.inputPending;
-    $('submit').disabled = this.inputPending || (!this.file && !$('prompt').value.trim());
+    $('submit').disabled = this.submitting || this.inputPending || (!this.file && !$('prompt').value.trim());
     $('clear-image').disabled = !this.file && !this.inputPending;
   }
 
@@ -193,6 +200,8 @@ class App {
     form.set('prompt', $('prompt').value.trim());
     if (this.file) form.set('image', this.file);
     const context = this.begin();
+    this.submitting = true;
+    this.updateSubmit();
     this.showInputPreview();
     text('job-status', '正在提交');
     text('job-message', '等待服务器接受任务…');
@@ -204,6 +213,11 @@ class App {
       if (this.current(context)) {
         text('job-status', '提交未确认');
         text('job-message', '未收到任务确认。可检查服务或打开预生成示例。');
+      }
+    } finally {
+      if (this.current(context)) {
+        this.submitting = false;
+        this.updateSubmit();
       }
     }
   }
@@ -257,6 +271,8 @@ class App {
   }
 
   async openResult(job, context) {
+    this.resultJob = job;
+    $('retry-scene').hidden = true;
     const result = job.result;
     text('metrics', metrics(result));
     text('scene-title', result.title);
@@ -267,6 +283,7 @@ class App {
       return item;
     }));
     $('result-details').hidden = false;
+    $('downloads').replaceChildren();
     for (const [key, label] of [['glb', '下载 GLB'], ['blend', 'Blender 工程'], ['manifest', 'Manifest'], ['evidence', '生成证据']]) {
       if (result.artifacts[key]) {
         const link = document.createElement('a');
@@ -291,6 +308,7 @@ class App {
       if (this.current(context)) {
         this.viewer.clear();
         this.sceneError(error);
+        $('retry-scene').hidden = false;
       }
       else console.error('旧场景加载失败', error);
     }
@@ -322,6 +340,7 @@ class App {
         }
       } else if (example.kind === 'scene') {
         $('prompt').value = example.job.input.prompt;
+        this.updateSubmit();
         text('input-status', '正在查看预生成场景。可选择图片或输入文字再次提交。');
         if (example.job.status !== 'succeeded') throw new Error('场景示例未包含成功任务');
         this.showJob(example.job, true);
