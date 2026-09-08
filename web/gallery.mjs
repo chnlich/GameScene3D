@@ -162,14 +162,27 @@ class Gallery {
 
     const media = document.createElement('div');
     media.className = 'entry-media';
-    const originalPane = this.mediaFigure('Original input');
+    const textOnly = example.job.input.image_url === null;
+    const originalPane = this.mediaFigure(textOnly ? 'Text prompt · previous export' : 'Original input');
     let originalImg = null;
     if (result.artifacts.original) {
       originalImg = new Image();
-      originalImg.alt = `Original input image for ${example.title}`;
+      originalImg.alt = textOnly
+        ? `Previous export before self-correction for ${example.title}`
+        : `Original input image for ${example.title}`;
       originalImg.src = safeURL(result.artifacts.original);
       originalImg.className = 'fill';
       originalImg.loading = 'lazy';
+      if (textOnly) {
+        const promptCard = document.createElement('p');
+        promptCard.className = 'media-empty';
+        promptCard.textContent = example.job.input.prompt;
+        originalPane.body.style.flexDirection = 'column';
+        originalPane.body.append(promptCard);
+        originalImg.style.flex = '1';
+        originalImg.style.minHeight = '0';
+        originalImg.style.height = 'auto';
+      }
       originalPane.body.append(originalImg);
     } else {
       const empty = document.createElement('p');
@@ -177,7 +190,7 @@ class Gallery {
       empty.textContent = 'No original image; this scene was created from a text prompt.';
       originalPane.body.append(empty);
     }
-    const sidePane = this.mediaFigure('Preview');
+    const sidePane = this.mediaFigure(textOnly ? 'Final render · after self-correction' : 'Preview');
     let previewImg = null;
     if (result.artifacts.preview) {
       previewImg = new Image();
