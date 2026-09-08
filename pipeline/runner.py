@@ -136,6 +136,10 @@ vertical height, never both. Up is a direction vector. Set authoritative image a
 Include normalized top-left-origin image landmarks for every major asset: bottom, center, or top of
 its final world bounding box. These are independent observed framing targets for reprojection checks.
 Include meaningful lighting, environment, and all required geometric identities.
+height_meters is the normalized standing height in meters, and scale components are dimensionless
+positive multipliers relative to the normalized asset (default [1, 1, 1]); both must be greater
+than 0, never 0, and a flat object such as a floor or water surface uses a small thin multiplier
+(for example 0.1).
 Return only the schema-conforming scene description.'''
 
 
@@ -309,6 +313,10 @@ def generate(request: dict, output_dir: Path, on_progress: Callable[[dict], None
                 'regenerate_assets explicitly names only assets whose actual mesh must be replaced. '
                 'Reuse all other existing meshes for transform, scale, height, pose and lighting edits. '
                 'Preserve their descriptions, crops and articulated flags. Updating prose alone does not replace a mesh. '
+                'height_meters is the normalized standing height in meters, and scale components are dimensionless '
+                'positive multipliers relative to the normalized asset (default [1, 1, 1]); both must be greater '
+                'than 0, never 0, and a flat object such as a floor or water surface uses a small thin multiplier '
+                '(for example 0.1). '
                 'A new asset or changed crop/articulated mode requires explicit regeneration. '
                 'A regenerated asset has NEW measured dimensions: do not apply size compensation measured on its old mesh. '
                 'Simple unit primitives have exact dimensions and can replace contaminated environment meshes. '

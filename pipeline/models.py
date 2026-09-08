@@ -34,6 +34,7 @@ class GlmConfig(Record):
     timeout_seconds: Positive
     max_tokens: Positive
     enable_thinking: bool = True
+    structured_decoding: bool = True
 
 
 class Spending(Record):
@@ -105,7 +106,10 @@ class Config(Record):
 class Transform(Record):
     position: Vec3
     rotation_degrees: Vec3
-    scale: tuple[Positive, Positive, Positive]
+    scale: Annotated[tuple[Positive, Positive, Positive],
+                     Field(description="A dimensionless relative multiplier applied after height normalization; "
+                                       "three strictly positive components, [1, 1, 1] means no scaling, and flat "
+                                       "objects may use a small thin multiplier such as 0.1 but never 0")]
 
 
 class Pose(Record):
@@ -123,7 +127,8 @@ class Asset(Record):
     visible_evidence: list[str]
     uncertain_completion: list[str]
     reference_crop: tuple[float, float, float, float] | None
-    height_meters: Positive
+    height_meters: Annotated[Positive, Field(description="The asset's standing height in meters that the mesh "
+                                                          "is normalized to BEFORE the transform; strictly positive")]
     articulated: bool
     transform: Transform
     pose: list[Pose]
