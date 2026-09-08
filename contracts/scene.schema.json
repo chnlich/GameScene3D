@@ -1,0 +1,662 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GameFrame3D shared interface",
+  "description": "Engineering owns this single source for public HTTP payloads and the Python generation boundary. No duplicated shared schema in web or pipeline.",
+  "$ref": "#/$defs/Job",
+  "x-contract-version": "0.1-draft",
+  "x-ownership": {
+    "engineering": [
+      "contracts/",
+      "server/",
+      "root config, dependency locks and run entry point"
+    ],
+    "generation": [
+      "pipeline/"
+    ],
+    "viewer": [
+      "web/"
+    ],
+    "materials": [
+      "demo/"
+    ]
+  },
+  "x-http": {
+    "POST /api/jobs": {
+      "request": "multipart/form-data: image optional PNG/JPEG/WebP file, prompt optional string; at least one nonempty input required",
+      "response": "202 Job; 422 Error for empty/invalid input, 503 Error if generation capability unavailable. Never report generated success for a stub."
+    },
+    "GET /api/jobs/{id}": {
+      "response": "200 Job, 404 Error. Status is derived from job files and process liveness; do not introduce a workflow/state-machine framework."
+    },
+    "GET /api/examples": {
+      "response": "200 array of Example, discriminated by kind=input|scene. InputExample prepares generation; SceneExample opens a verified completed scene and is prerecorded. Retain source, license, license_url, attribution and changes visibly. Materials-owned catalog is source data; service derives this API shape. Do not copy provenance into another independently maintained store."
+    },
+    "GET /api/health": {
+      "response": "200 Health; service responsiveness and generation capability are separate booleans."
+    },
+    "GET /artifacts/{job_id}/{file}": {
+      "response": "Artifact bytes. Only regular files within the selected job directory; reject traversal and symlink escapes. Embed materials in downloadable GLB."
+    },
+    "GET /demo/{file}": {
+      "response": "Read-only materials asset bytes rooted in demo/. API image URLs resolve here; reject traversal and symlink escapes. No job or generation is implied by an input image."
+    }
+  },
+  "x-python": {
+    "module": "pipeline.runner",
+    "call": "generate(request: dict, output_dir: pathlib.Path, on_progress: Callable[[dict], None]) -> dict",
+    "request": "GenerationRequest; image_path is absolute local input or null; prompt is a string (may be empty with image), at least one usable input is required. Job id is supplied by server. output_dir is an isolated job directory passed as the second function argument; config_path is explicit and nullable in request.",
+    "progress": "Progress dict; callback stores a current observational snapshot, not a state machine. Phase is descriptive text, no shared enum beyond Job.status.",
+    "return": "Result dict. artifacts values are relative URI-reference paths contained in output_dir. The server resolves these to /artifacts/{id}/ URLs for HTTP clients, retaining the same payload shape. original points to retained input for image jobs; null for text-only jobs.",
+    "failure": "Raise an exception with a safe actionable message; leave evidence written so far in output_dir. HTTP adapter records failure and retains evidence. Success requires actual readable GLB and evidence.",
+    "config": "Explicit YAML config file validated by Pydantic, selected by root CLI. Generation-specific configuration details owned by pipeline and passed explicitly as request.config_path (nullable); no secret in request snapshots or public evidence.",
+    "evidence": "evidence artifact records actual model/provider, calls and IDs when available, sanitized inputs/outputs, changes applied, timings, usage and cost. Unknown cost is null with reason, never fabricated zero. Preserve pre/post correction artifacts and link them inside evidence. Geometry generation decisions must depend on current input.",
+    "camera": "Return source-image camera in final GLB coordinates according to Camera. Pipeline owns conversion from Blender internal Z-up to exported glTF/GLB right-handed Y-up; position, target and up must undergo the same export coordinate conversion as the scene, exactly once. Viewer applies no Blender-to-glTF conversion. Perspective and orthographic are supported. Use null when unavailable; never substitute bbox-fit and claim it is the original camera.",
+    "internal_scene": "Scene description internals belong to pipeline/: characters/props, transforms, pose joint targets, environment and camera. Cross-line consumers use only GenerationRequest, Progress and Result. Manifest may preserve internal details for evidence without obligating viewer parsing.",
+    "outputs": "Publish actual generated scene.glb, preview.png and evidence; retain scene.blend and manifest when produced and expose their artifact paths, otherwise null. GLB and evidence are required for a successful Result. Fields specify semantic roles; implementations may use relative filenames appropriate to the job directory.",
+    "timing": "New generate calls report measured numeric elapsed_seconds. Reused SceneExample may use null when historical timing is unavailable; viewer displays unknown."
+  },
+  "$defs": {
+    "GenerationRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "image_path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "prompt": {
+          "type": "string"
+        },
+        "config_path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "image_path",
+        "prompt",
+        "config_path"
+      ],
+      "additionalProperties": false
+    },
+    "Progress": {
+      "type": "object",
+      "properties": {
+        "phase": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "fraction": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "phase",
+        "message",
+        "fraction"
+      ],
+      "additionalProperties": false
+    },
+    "Camera": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "target": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "up": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "fov_degrees": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 180,
+          "description": "Vertical FOV for perspective; null for orthographic."
+        },
+        "projection": {
+          "enum": [
+            "perspective",
+            "orthographic"
+          ]
+        },
+        "orthographic_height": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0,
+          "description": "Vertical world-space span in meters for orthographic; null for perspective."
+        },
+        "aspect_ratio": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Source-image width / height. Use this aspect for the source comparison viewport; letterbox as needed."
+        }
+      },
+      "required": [
+        "position",
+        "target",
+        "up",
+        "fov_degrees",
+        "projection",
+        "orthographic_height",
+        "aspect_ratio"
+      ],
+      "additionalProperties": false,
+      "description": "Source-image camera expressed in final exported GLB world coordinates: right-handed, +Y up, positions/target in meters. No post-load recentering or scaling may invalidate this camera. Null Result.camera means source-image camera unavailable; bbox-fit/reset must be labelled default view, not original view.",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "projection": {
+                "const": "perspective"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fov_degrees": {
+                "type": "number"
+              },
+              "orthographic_height": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "projection": {
+                "const": "orthographic"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fov_degrees": {
+                "type": "null"
+              },
+              "orthographic_height": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Artifacts": {
+      "type": "object",
+      "properties": {
+        "glb": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "original": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "preview": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidence": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "blend": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Downloadable Blender project with packed assets when available; null if unavailable."
+        },
+        "manifest": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Generation-owned scene/run manifest download. Internal contents are not a second cross-line API."
+        }
+      },
+      "required": [
+        "glb",
+        "original",
+        "preview",
+        "evidence",
+        "blend",
+        "manifest"
+      ],
+      "additionalProperties": false
+    },
+    "Result": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "artifacts": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Artifacts"
+            },
+            {
+              "properties": {
+                "glb": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "evidence": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          ]
+        },
+        "camera": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Camera"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "elapsed_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "Measured current-run elapsed seconds. Null only when a reused prerecorded scene has no reliable historical timing; never fabricate zero."
+        },
+        "cost_usd": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "cost_note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "summary",
+        "artifacts",
+        "camera",
+        "assumptions",
+        "elapsed_seconds",
+        "cost_usd",
+        "cost_note"
+      ],
+      "additionalProperties": false
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "additionalProperties": false
+    },
+    "Job": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "running",
+            "succeeded",
+            "failed"
+          ]
+        },
+        "progress": {
+          "$ref": "#/$defs/Progress"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "prompt": {
+              "type": "string"
+            },
+            "image_url": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "prompt",
+            "image_url"
+          ],
+          "additionalProperties": false
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Result"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "progress",
+        "input",
+        "result",
+        "error"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "succeeded"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "$ref": "#/$defs/Result"
+              },
+              "error": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "failed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "error": {
+                "$ref": "#/$defs/Error"
+              },
+              "result": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Example": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/InputExample"
+        },
+        {
+          "$ref": "#/$defs/SceneExample"
+        }
+      ]
+    },
+    "Health": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "generation_available": {
+          "type": "boolean"
+        },
+        "generation_note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "ok",
+        "generation_available",
+        "generation_note"
+      ],
+      "additionalProperties": false
+    },
+    "InputExample": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "license": {
+          "type": "string"
+        },
+        "license_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "attribution": {
+          "type": "string"
+        },
+        "changes": {
+          "type": "string"
+        },
+        "kind": {
+          "const": "input"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "prompt": {
+              "type": "string"
+            },
+            "image_url": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "prompt",
+            "image_url"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "source",
+        "license",
+        "license_url",
+        "attribution",
+        "changes",
+        "kind",
+        "input"
+      ],
+      "additionalProperties": false,
+      "description": "Candidate input only: selecting prepares image/prompt for POST /api/jobs; no generated scene or reconstruction claim."
+    },
+    "SceneExample": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "license": {
+          "type": "string"
+        },
+        "license_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "attribution": {
+          "type": "string"
+        },
+        "changes": {
+          "type": "string"
+        },
+        "kind": {
+          "const": "scene"
+        },
+        "prerecorded": {
+          "const": true
+        },
+        "job": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Job"
+            },
+            {
+              "properties": {
+                "status": {
+                  "const": "succeeded"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "source",
+        "license",
+        "license_url",
+        "attribution",
+        "changes",
+        "kind",
+        "prerecorded",
+        "job"
+      ],
+      "additionalProperties": false,
+      "description": "A verified loadable completed scene. Retain attribution and explicitly identify reused prior work in description/changes. Never create one solely from a candidate input."
+    }
+  },
+  "x-references": [
+    "https://fastapi.tiangolo.com/tutorial/request-forms-and-files/",
+    "https://json-schema.org/draft/2020-12",
+    "https://threejs.org/docs/pages/DRACOLoader.html"
+  ],
+  "x-web": {
+    "dependency": "Engineering owns root package.json and package-lock.json. Pin three 0.185.1, install with npm ci. Package paths confirmed with npm pack --dry-run --json; actual browser compatibility still requires testing.",
+    "vendor_mount": "GET /vendor/three/{file} serves only the installed node_modules/three package, read-only, with containment checks and correct JS/WASM MIME types. Do not expose other node_modules or project files.",
+    "import_map": {
+      "three": "/vendor/three/build/three.module.js",
+      "three/addons/": "/vendor/three/examples/jsm/"
+    },
+    "draco_decoder_path": "/vendor/three/examples/jsm/libs/draco/gltf/",
+    "camera_aspect": "For image inputs, original decoded pixel width/height is authoritative. Generator derives Camera.aspect_ratio from that image; adapter validates agreement and viewer preserves the original aspect (letterboxes when needed). For prompt-only generation, Camera.aspect_ratio is the generated composition aspect."
+  },
+  "x-demo": {
+    "materials_root": "demo/materials/",
+    "source_catalog": "demo/materials/catalog.json",
+    "source_attribution": "demo/materials/ATTRIBUTION.md",
+    "images": "demo/materials/images/",
+    "scripts": "demo/scripts/",
+    "mapping": "The materials handoff directory contents land under demo/materials/. Catalog file paths resolve relative to its parent; service derives InputExample image URLs under /demo/materials/. Preserve provenance in catalog and derive API presentation from it. Script exports land under demo/scripts/. Session evidence and chat remain outside the repository.",
+    "scenes": "demo/scenes/ stores materials-provided reusable GLBs and sanitized validation evidence. Source provenance and relative file mappings stay in the materials-owned catalog; original local evidence paths never enter the public catalog. Reused scene description must state prior generation and manual pose refinement; camera=null without a verified source-image camera."
+  }
+}

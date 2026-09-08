@@ -1,0 +1,23 @@
+# Credentials and local secrets
+.env
+.env.*
+credentials/
+credentials*.json
+secrets/
+secrets.*
+*.pem
+*.key
+
+# Dependencies and Python caches
+node_modules/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Generated runtime data
+/runtime/
+/data/
+/jobs/
+/artifacts/
+/outputs/
+*.log
