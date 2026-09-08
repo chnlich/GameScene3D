@@ -11,6 +11,15 @@ from .codex import _schema
 from .runtime import clean, timestamp, write_json
 
 
+def _strip_wire_bounds(value):
+    if isinstance(value, list):
+        return [_strip_wire_bounds(item) for item in value]
+    if not isinstance(value, dict):
+        return value
+    return {key: _strip_wire_bounds(item) for key, item in value.items()
+            if key not in ('minimum', 'exclusiveMinimum', 'maximum', 'exclusiveMaximum')}
+
+
 class Glm:
     def __init__(self, config, runtime):
         self.config = config
@@ -37,12 +46,14 @@ class Glm:
         payload = {"model": self.config.model, "messages": [{"role": "user", "content": content}],
                    "max_tokens": int(self.config.max_tokens),
                    "response_format": {"type": "json_schema", "json_schema": {
-                       "name": purpose, "schema": _schema(output_type.model_json_schema())}}}
+                       "name": purpose,
+                       "schema": _strip_wire_bounds(_schema(output_type.model_json_schema()))}}}
         if not self.config.enable_thinking:
             payload["chat_template_kwargs"] = {"enable_thinking": False}
         call = {"id": call_id, "purpose": purpose, "provider": "GLM gateway", "model": self.config.model,
                 "settings": {"max_tokens": self.config.max_tokens, "timeout_seconds": self.config.timeout_seconds,
-                             "response_format": "json_schema", "enable_thinking": self.config.enable_thinking},
+                             "response_format": "json_schema", "enable_thinking": self.config.enable_thinking,
+                             "wire_bounds_stripped": True},
                 "started_at": timestamp()}
         try:
             request = urllib.request.Request(self.config.endpoint + '/chat/completions',
