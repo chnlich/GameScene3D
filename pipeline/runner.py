@@ -5,12 +5,13 @@ import shutil
 import subprocess
 import time
 import urllib.request
+import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Callable
 
 from jsonschema import Draft202012Validator
-from PIL import Image, ImageOps
+from PIL import Image, ImageDraw, ImageOps
 from pydantic import ValidationError
 
 from .codex import Codex
@@ -169,7 +170,42 @@ def _compose(scene, assets, config, runtime, index):
     runtime.process([config.blender.executable, '--background', '--factory-startup', '--python-exit-code', '1',
                      '--python', str(script), '--', 'compose', str(directory / 'scene.json'),
                      str(runtime.output), str(directory)], directory, '', runtime.remaining())
+    original = runtime.output / 'original.png'
+    if original.exists():
+        with Image.open(original) as source, Image.open(directory / 'preview.png') as preview:
+            reference = source.convert('RGB').resize(preview.size, Image.Resampling.LANCZOS)
+            comparison = Image.new('RGB', (preview.width * 2, preview.height + 32), '#101820')
+            comparison.paste(reference, (0, 32))
+            comparison.paste(preview, (preview.width, 32))
+            labels = ImageDraw.Draw(comparison)
+            labels.text((12, 10), 'Source image', fill='white')
+            labels.text((preview.width + 12, 10), 'Generated iteration - pending inspection', fill='white')
+            comparison.save(directory / 'comparison.png')
     return directory, json.loads((directory / 'checks.json').read_text())
+
+
+def verify_iteration(config_path, output, iteration):
+    """Reopen retained files without inference; this does not accept scene quality."""
+    config = Config.read(config_path)
+    output = Path(output).resolve()
+    source = (output / iteration).resolve()
+    source.relative_to(output)
+    job = json.loads((source / 'scene.json').read_text())
+    Scene.model_validate(job['scene'])
+    if shutil.which(config.blender.executable) is None:
+        raise RuntimeError('Blender configured executable is unavailable')
+    destination = output / 'verification' / uuid.uuid4().hex
+    destination.mkdir(parents=True)
+    runtime = Runtime(destination, config.deadline_seconds)
+    runtime.record({'purpose': 'independent reopen', 'source': source.relative_to(output).as_posix(),
+                    'visual_acceptance': 'not evaluated'})
+    runtime.process([config.blender.executable, '--background', '--factory-startup', '--python-exit-code', '1',
+                     '--python', str(Path(__file__).with_name('blender_scene.py')), '--', 'verify',
+                     str(source / 'scene.json'), str(source), str(destination)],
+                    destination, '', runtime.remaining())
+    return {'verification': destination.relative_to(output).as_posix() + '/reopen.json',
+            'preview': destination.relative_to(output).as_posix() + '/reopen.png',
+            'visual_acceptance': 'not evaluated'}
 
 
 def _changes(before, after, path=''):

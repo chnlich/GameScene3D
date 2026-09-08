@@ -51,6 +51,18 @@ charged submission blocks reuse until reconciled with the provider; it is never
 automatically reposted. HTTP 429 responses use bounded backoff and honor Retry-After
 within the overall deadline.
 
+Reopen an existing iteration independently when inference is unavailable:
+
+```sh
+python -m pipeline --config /private/config.yaml --output /private/jobs/image \
+  --id image-readback --verify-iteration iterations/attempt/0
+```
+
+This operation reads the retained Blender project and GLB in a fresh process,
+checks geometry and materials, and renders `verification/<id>/reopen.png` from
+the scene camera. It makes no model or provider calls and does not mark visual
+quality accepted. Its invocation, report and logs remain beside the job.
+
 Spending caps apply per output directory. To authorize unlimited spending, set
 `spending.authorization` to an explicit authorization description,
 `unlimited_authorized: true`, and both `max_credits` and `max_submissions` to `null`.
@@ -67,6 +79,8 @@ and geometric checks. Successful artifacts include packed `scene.blend`, embedde
 `scene.glb`, `preview.png`, `manifest.json` and `evidence.json`. Public paths are
 relative to the output directory; only the service resolves URLs. Keep private
 configuration outside that directory.
+Image iterations also retain `comparison.png`, showing the source and generated
+preview at the same aspect ratio, labeled as pending inspection.
 
 Imported Meshy assets are aligned from glTF +Z front (Blender -Y) to the
 internal +Y-facing convention before the analyzed transform is applied.
