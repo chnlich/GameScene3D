@@ -36,16 +36,24 @@ def examples(root: Path):
         raise ValueError("Materials catalog must be an array")
     output = []
     for entry in catalog:
-        reference = demo_reference(demo_root, catalog_path.parent, entry["file"])
         example = {
             key: entry[key] for key in ("title", "source", "license", "license_url", "attribution", "changes")
         }
-        example.update(
-            id=hashlib.sha256(entry["file"].encode()).hexdigest()[:24],
-            kind="input",
-            description=f"{entry['category']}: {entry['visible_checks']}",
-            input={"prompt": "", "image_url": "/demo/" + quote(reference, safe="/")},
-        )
+        if entry["file"] is None:
+            example.update(
+                id=hashlib.sha256(entry["prompt"].encode()).hexdigest()[:24],
+                kind="input",
+                description=f"{entry['category']}: {entry['visible_checks']}",
+                input={"prompt": entry["prompt"], "image_url": None},
+            )
+        else:
+            reference = demo_reference(demo_root, catalog_path.parent, entry["file"])
+            example.update(
+                id=hashlib.sha256(entry["file"].encode()).hexdigest()[:24],
+                kind="input",
+                description=f"{entry['category']}: {entry['visible_checks']}",
+                input={"prompt": "", "image_url": "/demo/" + quote(reference, safe="/")},
+            )
         validate("Example", example)
         public_safe(example)
         output.append(example)

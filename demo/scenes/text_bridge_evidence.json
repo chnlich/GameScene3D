@@ -1,0 +1,115 @@
+{
+  "title": "File verification for Traveler on a Stone Bridge at Dusk (web display copy)",
+  "artifact": "text_bridge.glb",
+  "sha256": "874907f9f0ddf80dde77703c1331fd3da43a120cbaa8c9913d7ee0b2bc025cd1",
+  "bytes": 19174604,
+  "provenance": "First end-to-end pipeline output from a text-only input (no source image): GLM scene analysis, Meshy asset generation, Blender composition. The tool's own inspection of the pipeline's previous export found the stone bridge and both bank mesh proportions far from the text description, so the pipeline rebuilt those three assets and re-exported; the corrected run passed pose and reprojection checks. Not a hand-reworked scene and distinct from the lead scene. The public catalog entry carries a faithful English translation of the consumed text brief.",
+  "input_brief": {
+    "image": null,
+    "note": "Text-only input; there is no source image and no source-image camera. The brief asked for a blue-cloaked traveler with a warm lantern on a stone bridge over a narrow stream, a low round stone tower on the right bank, two layers of hills at dusk, and a rotatable static scene.",
+    "reference_crops": null
+  },
+  "self_correction": {
+    "flagged_by": "The pipeline's own inspection of its previous export",
+    "finding": "First-pass stone_bridge, left_bank and right_bank mesh proportions distorted the described footprint (banks measured about 2.4 x 2.4 m against a described 8 x 18 m; bridge about 4.83 m against a described 8.6 m), leaving the traveler unsupported and the tower on an isolated block.",
+    "measured_before_to_after": {
+      "left_bank_footprint_m": [2.345, 2.414],
+      "left_bank_footprint_m_after": [6.778, 5.713],
+      "right_bank_footprint_m": [2.76, 2.748],
+      "right_bank_footprint_m_after": [4.693, 3.822],
+      "stone_bridge_length_m": 4.83,
+      "stone_bridge_length_m_after": 5.491,
+      "stream_and_bed_span": "shortened to y=-8..10 to match the rebuilt banks"
+    },
+    "rebuild": "Six new Meshy tasks regenerated stone_bridge, left_bank and right_bank (all succeeded; task receipts retained in the private job root); all other meshes were reused.",
+    "checks_after": "Iteration 1 passed pose and landmark reprojection checks; maximum reprojection error 0.0546 (normalized image coordinates).",
+    "elapsed_seconds": 701.7841902970104
+  },
+  "original_assets": {
+    "glb_bytes": 330895428,
+    "glb_sha256": "9ac06de2f41aa59381998c6979658988b0c9f874bb3b51fa7af18e729a004aa7",
+    "blend_bytes": 424020191,
+    "blend_sha256": "b2673b1b0d677412cd3e0490afa269d73b1c407967e3629ae1af3d45d5aa9c68",
+    "note": "Uncompressed originals retained in the private job root outside the repository; they do not enter the repository (GitHub 100 MB per-file limit and repo hygiene)."
+  },
+  "camera": null,
+  "camera_reference": {
+    "note": "No source image exists, so the catalog entry has no camera; the viewer's reset is the default view. The pipeline staged a composition camera for its 16:9 renders; values recorded here for reference only, in exported GLB world coordinates.",
+    "staged_composition_camera": {
+      "position": [6.0, 7.0, 10.0],
+      "target": [0.0, 1.3, -1.5],
+      "up": [0.0, 1.0, 0.0],
+      "projection": "perspective",
+      "fov_degrees": 42.0,
+      "aspect_ratio": 1.7777777777777777
+    }
+  },
+  "current_file_checks": {
+    "glb_version": 2,
+    "header_length_matches_file": true,
+    "mesh_count": 11,
+    "material_count": 11,
+    "camera_count": 0,
+    "external_asset_uris": [],
+    "extensions_used": [
+      "KHR_draco_mesh_compression",
+      "KHR_materials_emissive_strength"
+    ],
+    "embedded_images": 24
+  },
+  "compression": {
+    "input_bytes": 330895428,
+    "output_bytes": 19174604,
+    "tool": "Blender 5.2.1 LTS headless: import GLB, per-object Decimate modifiers, texture pass, GLB export with KHR_draco_mesh_compression (Draco level 6)",
+    "decimate_ratios": {
+      "traveler": 0.75,
+      "lantern": 0.4,
+      "stone_bridge": 0.35,
+      "stone_tower": 0.35,
+      "left_bank": 0.3,
+      "right_bank": 0.3,
+      "near_hills": 0.25,
+      "far_hills": 0.25,
+      "stream": 1.0,
+      "stream_bed": 1.0,
+      "lantern_glow": 1.0
+    },
+    "faces": "about 6.7 M before decimation to 2.46 M after",
+    "textures": "All 24 textures were already within the 2048 px cap, so no resize was needed; they were re-encoded from PNG to JPEG quality 90 for the web copy. All materials are opaque, so no alpha was lost.",
+    "reimport_check": "Blender re-import of the compressed file reports 11 meshes and 11 materials (matching the original) and world bounds within 0.007% of the original's bounds."
+  },
+  "renders": {
+    "before": {
+      "file": "text_bridge_before.png",
+      "sha256": "fe11d4b2bcaf651e2558def86c236ef7f9c864224cc0ca06cd3d2a61240ac3e6",
+      "bytes": 1177852,
+      "note": "The pipeline's previous export, whose inspection flagged the bank and bridge proportions; pixels unmodified."
+    },
+    "after": {
+      "file": "text_bridge_after.png",
+      "sha256": "239c10dbc23a0736e3f3983f2f4cae717ab9f241fdc291a819514664908e5628",
+      "bytes": 1204662,
+      "note": "The corrected run's final render (iteration 1); pixels unmodified."
+    },
+    "independent_reopen": {
+      "file": "reopen.png (private job root)",
+      "sha256": "a7e704a9fca361e2f69b4524d00e1dbd8dcf00f23ccf205feff7984d9d9573bd",
+      "bytes": 1204143,
+      "note": "An independent Blender reopen of the final blend rendered for verification."
+    },
+    "compressed_camera_check": {
+      "file": "text_bridge_camera_check.png (untracked runtime evidence, not published)",
+      "sha256": "9c18ccaac9e9839d656814226a4dda7aee8c8c498a49d9f719c83d85b2846eb5",
+      "bytes": 2305789,
+      "note": "Sanity render of the compressed GLB at the staged composition camera; geometry, textures and the lantern's emissive glow verified. The GLB carries no lights, so this raw render is darker than the published previews."
+    }
+  },
+  "validation_limits": [
+    "The published GLB is a derived web display copy (decimated, Draco-compressed, JPEG textures); the uncompressed original is retained outside the repository.",
+    "Visual acceptance of the compressed copy is pending human eyes; the staged-camera render is a structural sanity check, not a quality verdict.",
+    "The GLB contains no camera; the viewer's reset returns to the default view. The staged composition camera is a render reference, not a source-image camera, and no source image exists.",
+    "Cost: Meshy credits are not USD and no USD billing record exists for this run; cost is unknown rather than zero."
+  ],
+  "elapsed_seconds": 701.7841902970104,
+  "cost_usd": null
+}
