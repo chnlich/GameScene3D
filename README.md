@@ -78,7 +78,7 @@ after the dependency installation above, from a Git checkout with Git installed:
 
 ```sh
 uv run python -m server.export --output runtime/static-demo
-python -m http.server 8080 --bind 127.0.0.1 --directory runtime/static-demo
+python -m server.static --directory runtime/static-demo --host 127.0.0.1 --port 8080
 ```
 
 Choose a new or empty output directory; export refuses existing data and never
