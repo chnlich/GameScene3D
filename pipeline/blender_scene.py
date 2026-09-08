@@ -28,8 +28,12 @@ def material_check(objects):
             if material.use_nodes:
                 for node in material.node_tree.nodes:
                     if node.type == 'TEX_IMAGE':
-                        if node.image is None or not node.image.has_data:
-                            raise RuntimeError('Material texture is not readable')
+                        if node.image is None:
+                            raise RuntimeError('Material texture is missing: ' + material.name)
+                        # Packed glTF images decode lazily; accessing pixels tests actual readability.
+                        pixels = node.image.pixels[:4]
+                        if len(pixels) != 4 or min(node.image.size) <= 0 or not all(math.isfinite(v) for v in pixels):
+                            raise RuntimeError('Material texture is not readable: ' + node.image.name)
                         if node.image.packed_file:
                             images.add(hashlib.sha256(node.image.packed_file.data).hexdigest())
                         else:

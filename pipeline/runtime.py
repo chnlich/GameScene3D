@@ -51,6 +51,9 @@ class Runtime:
         self.evidence = json.loads(evidence_path.read_text()) if evidence_path.exists() else {
             "started_at": timestamp(), "calls": [], "changes": [],
             "cost_usd": None, "cost_reason": "Codex account billing unavailable; Meshy credits are not USD"}
+        if 'outcome' in self.evidence:
+            self.evidence.setdefault('prior_outcomes', []).append({
+                key: self.evidence.pop(key) for key in ('outcome', 'failure', 'elapsed_seconds') if key in self.evidence})
         self.evidence.setdefault('attempts', []).append({'id': self.attempt, 'started_at': timestamp()})
         self.save()
 
