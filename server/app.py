@@ -92,7 +92,7 @@ def file_response(root: Path, reference: str):
     except (ValueError, OSError):
         LOG.debug("Rejected missing or uncontained asset", exc_info=True)
         raise TaskError(404, "not_found", "Asset not found.") from None
-    media_type = {".js": "text/javascript", ".mjs": "text/javascript", ".wasm": "application/wasm", ".glb": "model/gltf-binary"}.get(path.suffix)
+    media_type = {".json": "application/json", ".js": "text/javascript", ".mjs": "text/javascript", ".wasm": "application/wasm", ".glb": "model/gltf-binary"}.get(path.suffix)
     return FileResponse(path, media_type=media_type or mimetypes.guess_type(path.name)[0] or "application/octet-stream", headers={"X-Content-Type-Options": "nosniff"})
 
 
@@ -191,6 +191,10 @@ def create_app(config: Config, root: Path = ROOT):
             raise TaskError(404, "not_found", "Artifact not found.") from None
         return file_response(path.parent, path.name)
 
+    @app.get("/contracts/scene.schema.json")
+    def contract():
+        return file_response(root, "contracts/scene.schema.json")
+
     @app.get("/demo/{reference:path}")
     def demo(reference: str):
         return file_response(root, "demo/" + reference)
@@ -201,7 +205,7 @@ def create_app(config: Config, root: Path = ROOT):
 
     @app.get("/{reference:path}")
     def ui(reference: str):
-        if reference.split("/", 1)[0] in ("api", "artifacts", "demo", "vendor"):
+        if reference.split("/", 1)[0] in ("api", "artifacts", "demo", "vendor", "contracts"):
             raise TaskError(404, "not_found", "Route not found.")
         if not (root / "web/index.html").is_file():
             raise TaskError(503, "ui_not_ready", "Viewer files are not installed yet.")

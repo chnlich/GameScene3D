@@ -23,12 +23,19 @@ assets; root configuration contains only its explicit path. Generation YAML pars
 and validation belong to pipeline.
 
 `GET /api/health` separates HTTP liveness from generation capability. The adapter
-checks the explicit generation configuration, `codex` and `blender` executables on
-PATH, and callable `pipeline.runner.generate`. Missing prerequisites produce a safe
-unavailable reason and submissions return `503 Error`. Detected prerequisites do
-not establish authentication, valid provider configuration or a working full 3D
-pipeline. The previously verified local Codex image/structured-output probe also
-does not establish full 3D generation. Health performs no model calls.
+requires callable `pipeline.runner.generate` and `pipeline.runner.preflight`, then
+calls `preflight(config_path: str | None) -> list[str]` with the same resolved path
+(or null) used for generation. Start generation configuration from
+`pipeline/config.example.yaml`; pipeline owns executable, login, provider and
+spending configuration semantics. Explicit unlimited spending is supported without
+a numeric cap or another approval. Root does not duplicate those rules.
+
+Preflight returns safe blocking reasons, with no credentials or private paths.
+Invalid returns and exceptions fail capability with a generic public reason and
+local diagnostic log. Blocking reasons make submissions return `503 Error`.
+An empty list means local prerequisites only. Preflight must be read-only, with no
+model calls, charged requests or external modifications. A working model CLI probe,
+HTTP liveness and successful full scene generation are separate readiness claims.
 
 Submit multipart `image` (actual PNG/JPEG/WebP) and/or a nonempty `prompt` to
 `POST /api/jobs`. Accepted requests return `202 Job`; invalid inputs return
@@ -68,26 +75,24 @@ materials' actual sanitized scene mapping, including prior-generation/manual-pos
 provenance and unknown historical timing. The current contract allows that timing
 to be null; an unverified source-image camera remains null.
 
-Read-only `/demo/` serves materials. `/vendor/three/` serves only the installed
+`GET /contracts/scene.schema.json` serves the canonical file as `application/json`.
+Viewer bootstrap dynamically reads `x-web.import_map` there. Other contracts paths
+return 404 and never enter viewer fallback. Read-only `/demo/` serves materials. `/vendor/three/` serves only the installed
 contract-pinned three package, including JS modules and WASM Draco assets.
 `web/index.html` and viewer modules are served when installed; otherwise the root
 reports `ui_not_ready`. API and asset routes take precedence. Traversal and symlinks,
 including symlink asset directories, are rejected.
 
-Run the reproducible engineering checks:
+For integration readback, start the real server through the CLI above and inspect
+`/api/health`, `/contracts/scene.schema.json`, `/api/examples`, `/`, and the contract's
+Three.js module and Draco decoder URLs. Compare contract bytes with the repository
+file and check JS/WASM MIME types. Stop only the server started for the check.
+Keep command and log evidence under ignored `runtime/`, outside public assets.
 
-```sh
-uv run python -m server.tests.check
-```
-
-This recipe asserts launchers and locks, runs `uv sync --locked` and `npm ci`, checks
-unchanged lockfiles, runs the explicitly labeled offline plumbing tests, and starts
-and closes the real server via its CLI on an unused loopback port. Startup checks
-health, examples and installed vendor JS/WASM without submitting generation. Reports
-and service logs stay under `runtime/startup-*/`. Offline GLBs are test fixtures;
-they are not user generation or proof of the model pipeline. No browser, production
-service change or paid inference is involved. Full pipeline integration, materials
-scene metadata, viewer/browser verification and engineering master's Astra review
+Existing `server/tests/` files are retained as historical offline plumbing evidence.
+Their capability checks predate pipeline-owned preflight; they were not rerun or
+updated for this integration review. Offline GLBs do not prove model generation.
+Full pipeline integration, materials scene metadata, and viewer/browser verification
 remain separate integration dependencies.
 
 | Work line | Owned files | Branch |

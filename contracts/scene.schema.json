@@ -21,6 +21,9 @@
     ]
   },
   "x-http": {
+    "GET /contracts/scene.schema.json": {
+      "response": "Read-only canonical contract bytes as application/json. Only this exact contracts URL is public; other contracts paths must not enter the viewer fallback. Viewer dynamically reads x-web.import_map here before loading Three.js modules."
+    },
     "POST /api/jobs": {
       "request": "multipart/form-data: image optional PNG/JPEG/WebP file, prompt optional string; at least one nonempty input required",
       "response": "202 Job; 422 Error for empty/invalid input, 503 Error if generation capability unavailable. Never report generated success for a stub."
@@ -46,7 +49,7 @@
     "config_example": "pipeline/config.example.yaml",
     "preflight": "pipeline.runner.preflight(config_path: str | None) -> list[str]",
     "preflight_return": "Safe human-readable blocking reasons; never expose credential values or private paths. [] means local prerequisites pass only, not a completed charged generation or a generated GLB.",
-    "preflight_checks": "Local-only checks of YAML config validated by Pydantic, configured Codex and Blender executables, existing local Codex login prerequisites, Meshy credential file and explicitly authorized spending configuration. Do not run a model or send a charged Meshy request.",
+    "preflight_checks": "Local-only checks of YAML config validated by Pydantic, configured Codex and Blender executables, existing local Codex login prerequisites, Meshy credential file and explicitly authorized spending configuration. Preflight is read-only: no model calls, charged requests or external modifications. Explicit unlimited spending is valid authorization and must not require a numeric cap or another approval; provider configuration syntax belongs only to pipeline.",
     "preflight_ownership": "Pipeline owns preflight checks and the generation config schema. Root server passes its explicit generation config path as config_path and consumes the returned reasons without duplicating pipeline internal rules.",
     "call": "generate(request: dict, output_dir: pathlib.Path, on_progress: Callable[[dict], None]) -> dict",
     "request": "GenerationRequest; image_path is absolute local input or null; prompt is a string (may be empty with image), at least one usable input is required. Job id is supplied by server. output_dir is an isolated job directory passed as the second function argument; config_path is explicit and nullable in request.",

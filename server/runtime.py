@@ -4,7 +4,6 @@ import json
 import logging
 import os
 import re
-import shutil
 import threading
 import time
 import uuid
@@ -30,11 +29,6 @@ class TaskError(Exception):
 
 
 def capability(config: Config):
-    if not config.generation_config or not config.generation_config.is_file():
-        return None, "Generation configuration is missing; set generation_config in the root YAML."
-    for executable in ("codex", "blender"):
-        if shutil.which(executable) is None:
-            return None, f"Required {executable} executable is missing from PATH."
     try:
         module = importlib.import_module("pipeline.runner")
     except ModuleNotFoundError:
@@ -46,6 +40,19 @@ def capability(config: Config):
     generate = getattr(module, "generate", None)
     if not callable(generate):
         return None, "pipeline.runner must provide generate(request, output_dir, on_progress)."
+    preflight = getattr(module, "preflight", None)
+    if not callable(preflight):
+        return None, "pipeline.runner must provide preflight(config_path)."
+    try:
+        reasons = preflight(str(config.generation_config) if config.generation_config is not None else None)
+        if not isinstance(reasons, list) or any(not isinstance(reason, str) or not reason.strip() for reason in reasons):
+            raise ValueError("Preflight must return a list of nonempty reason strings")
+        public_safe(reasons)
+    except Exception:
+        LOG.exception("Generation preflight failed or returned invalid public reasons")
+        return None, "Pipeline preflight failed; inspect the local server log."
+    if reasons:
+        return None, "; ".join(reasons)
     return generate, "Local prerequisites detected; full 3D generation has not been verified by health."
 
 
@@ -144,7 +151,7 @@ class Runtime:
             request = {
                 "id": job_id, "prompt": prompt,
                 "image_path": str((directory / original).resolve()) if original else None,
-                "config_path": str(self.config.generation_config.resolve()),
+                "config_path": str(self.config.generation_config) if self.config.generation_config is not None else None,
             }
             validate("GenerationRequest", request)
             self.pending += 1
