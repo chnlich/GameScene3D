@@ -37,45 +37,6 @@
     "changes": "Reference frame copied unmodified; the GLB is a Draco-compressed export."
   },
   {
-    "file": "images/user_test_duel.png",
-    "title": "Two-character light-blade duel",
-    "category": "Two-character action",
-    "selection": "Priority",
-    "visible_checks": "Both characters' left/right placement, red and green light blades, lunging poses, temple floor",
-    "bytes": 2588317,
-    "sha256": "1f05902f40655d98819cf34f58ed537a23e99ae334d945df7f02addb3ac24f7a",
-    "dimensions": [
-      1920,
-      1080
-    ],
-    "generated_scene": {
-      "title": "Preexisting two-character duel scene",
-      "summary": "A preexisting prerecorded scene with manually refined poses. The reference image is a render of that older scene, not an output of the current automated pipeline.",
-      "artifacts": {
-        "glb": "../scenes/duel_manual.glb",
-        "original": "images/user_test_duel.png",
-        "preview": "images/user_test_duel.png",
-        "evidence": "../scenes/duel_manual_evidence.json",
-        "blend": null,
-        "manifest": null
-      },
-      "camera": null,
-      "assumptions": [
-        "The old viewer's default camera is not the source-image camera.",
-        "This entry reuses prior work; no new automated generation was run."
-      ],
-      "elapsed_seconds": null,
-      "cost_usd": null,
-      "cost_note": "No reliable historical billing records exist; cost is unknown."
-    },
-    "source": "Feasibility-test two-character duel render provided by the project team",
-    "license": "Explicitly approved for this use by the project team; no general open-source license is granted",
-    "attribution": "Project team feasibility-test material; characters are StarCraft-related likenesses",
-    "changes": "Render pixels unmodified; only PNG File text metadata containing local paths was removed. source_sha256 keeps the checksum of the handoff original, while sha256 refers to the published file. This image is a candidate input for the current pipeline, not evidence of its output.",
-    "license_url": null,
-    "source_sha256": "0f49e672b5d04c91dd1e2de21acaa64cbbbac74399e23b902e8d8b94d1205788"
-  },
-  {
     "file": "images/sintel_00000960.png",
     "title": "Traveler in the snow",
     "category": "Single-character environment",
