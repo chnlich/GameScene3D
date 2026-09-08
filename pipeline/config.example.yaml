@@ -12,7 +12,8 @@ glm:
   model: REPLACE_WITH_GLM_MODEL_ID
   concurrency: 2
   timeout_seconds: 300
-  max_tokens: 8192
+  max_tokens: 65536
+  enable_thinking: false
 meshy:
   endpoint: https://api.staging.meshy.ai
   key_file: /REPLACE_WITH_PRIVATE_KEY_FILE

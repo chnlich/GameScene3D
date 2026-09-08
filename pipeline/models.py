@@ -33,6 +33,7 @@ class GlmConfig(Record):
     concurrency: Annotated[int, Field(ge=1)]
     timeout_seconds: Positive
     max_tokens: Positive
+    enable_thinking: bool = True
 
 
 class Spending(Record):
