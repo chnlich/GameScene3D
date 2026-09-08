@@ -173,6 +173,36 @@ def evaluated_bounds(objects):
     return [min(p[i] for p in points) for i in range(3)], [max(p[i] for p in points) for i in range(3)]
 
 
+def lighting(scene, data):
+    for item in data['lights']:
+        lamp = bpy.data.lights.new('scene_light', item['kind'])
+        lamp.energy = item['energy']
+        lamp.color = item['color']
+        if item['kind'] == 'AREA':
+            lamp.shape = 'DISK'
+            lamp.size = item['size']
+        elif item['kind'] == 'POINT':
+            lamp.shadow_soft_size = item['size']
+        else:
+            lamp.angle = item['size']
+        obj = bpy.data.objects.new('scene_light', lamp)
+        scene.collection.objects.link(obj)
+        obj.location = item['position']
+        obj.rotation_euler = (Vector(item['target'])-obj.location).to_track_quat('-Z', 'Y').to_euler()
+    scene.world = bpy.data.worlds.new('scene_world')
+    scene.world.use_nodes = True
+    scene.world.node_tree.nodes['Background'].inputs['Color'].default_value = (*data['world_color'], 1)
+
+
+def render(scene, settings, path):
+    scene.render.engine = 'CYCLES'
+    scene.cycles.device = 'CPU'
+    scene.cycles.samples = settings['samples']
+    scene.render.image_settings.file_format = 'PNG'
+    scene.render.filepath = str(path)
+    bpy.ops.render.render(write_still=True)
+
+
 def compose(job, root, destination):
     bpy.ops.wm.read_factory_settings(use_empty=True)
     data, assets, settings = job['scene'], job['assets'], job['blender']
@@ -207,24 +237,7 @@ def compose(job, root, destination):
                                 'achieved': list(achieved), 'error_meters': (achieved-Vector(goal['target'])).length})
     for item in data['primitives']:
         groups[item['id']] = [primitive(item)]
-    for item in data['lights']:
-        lamp = bpy.data.lights.new('scene_light', item['kind'])
-        lamp.energy = item['energy']
-        lamp.color = item['color']
-        if item['kind'] == 'AREA':
-            lamp.shape = 'DISK'
-            lamp.size = item['size']
-        elif item['kind'] == 'POINT':
-            lamp.shadow_soft_size = item['size']
-        else:
-            lamp.angle = item['size']
-        obj = bpy.data.objects.new('scene_light', lamp)
-        scene.collection.objects.link(obj)
-        obj.location = item['position']
-        obj.rotation_euler = (Vector(item['target'])-obj.location).to_track_quat('-Z', 'Y').to_euler()
-    scene.world = bpy.data.worlds.new('scene_world')
-    scene.world.use_nodes = True
-    scene.world.node_tree.nodes['Background'].inputs['Color'].default_value = (*data['world_color'], 1)
+    lighting(scene, data)
     cam = camera(scene, data['camera'], settings['resolution_height'])
     bpy.context.view_layer.update()
     geometry = {identity: evaluated_bounds(meshes) for identity, meshes in groups.items()}
@@ -244,12 +257,7 @@ def compose(job, root, destination):
               'pose_passed': all(p['error_meters'] <= settings['pose_tolerance_meters'] for p in pose_checks),
               'reprojection_passed': bool(landmarks) and all(p['depth'] > 0 and p['error'] <= settings['reprojection_tolerance'] for p in landmarks)}
     dump(destination / 'checks.json', checks)
-    scene.render.engine = 'CYCLES'
-    scene.cycles.device = 'CPU'
-    scene.cycles.samples = settings['samples']
-    scene.render.image_settings.file_format = 'PNG'
-    scene.render.filepath = str(destination / 'preview.png')
-    bpy.ops.render.render(write_still=True)
+    render(scene, settings, destination / 'preview.png')
     bpy.ops.file.pack_all()
     for image in bpy.data.images:
         if image.packed_file:
@@ -291,6 +299,11 @@ def verify(job, root, destination):
         report = material_check(meshes)
         report['bounds'] = evaluated_bounds(meshes)
         reports[extension] = report
+        if extension == 'glb':
+            scene = bpy.context.scene
+            lighting(scene, job['scene'])
+            camera(scene, job['scene']['camera'], job['blender']['resolution_height'])
+            render(scene, job['blender'], destination / 'reopen.png')
     if reports['blend']['faces'] > reports['glb']['faces']:
         raise RuntimeError('Export lost mesh faces')
     for first, second in zip(reports['blend']['bounds'], reports['glb']['bounds']):
