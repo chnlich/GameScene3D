@@ -499,15 +499,20 @@ body>footer {
   color:#a6b8b0;
   overflow-wrap:anywhere
 }
+body[data-page="scene"] header,
+body[data-page="scene"] main,
+body[data-page="scene"]>footer {
+  width:min(1760px,100%)
+}
 .stage-wrap {
   display:grid;
-  grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);
+  grid-template-columns:minmax(0,1fr) minmax(300px,22%);
   gap:16px;
   align-items:stretch
 }
 .stage {
   position:relative;
-  height:min(74vh,780px);
+  height:min(74vh,840px);
   min-height:420px;
   background:#090f12;
   border:1px solid #34433e;
