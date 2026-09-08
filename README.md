@@ -66,14 +66,31 @@ provider evidence and packed binary assets before returning them.
 `GET /api/examples` derives provenance from the materials-owned catalog at the path
 specified by `x-demo`. The inspected materials handoff is an array with `file`,
 `title`, `category`, `visible_checks`, provenance fields, and `generated_scene`.
-Current entries all have `generated_scene: null`; their files resolve relative to
-`demo/materials/catalog.json`, and the API exposes candidate inputs. No catalog
-means an empty list. Malformed catalog data fails visibly. Completed-scene catalog
-metadata has not been supplied: a non-null `generated_scene` reports an integration
-error instead of inventing a SceneExample. Engineering needs a narrow followup with
-materials' actual sanitized scene mapping, including prior-generation/manual-pose
-provenance and unknown historical timing. The current contract allows that timing
-to be null; an unverified source-image camera remains null.
+Files resolve relative to `demo/materials/catalog.json`. Null `generated_scene`
+entries expose candidate inputs; non-null results also expose validated prerecorded
+scenes. The current catalog includes a reused scene with prior-generation and
+manual-pose provenance. Unknown historical timing, cost and unverified source-image
+camera remain null. No catalog means an empty list in the live API; malformed
+catalog data fails visibly.
+
+For public delivery of the completed-demo viewer, export a display-only snapshot
+after the dependency installation above, from a Git checkout with Git installed:
+
+```sh
+uv run python -m server.export --output runtime/static-demo
+python -m http.server 8080 --bind 127.0.0.1 --directory runtime/static-demo
+```
+
+Choose a new or empty output directory; export refuses existing data and never
+deletes it. The exporter copies the current tracked `web/` and sanitized `demo/`
+files, the exact canonical contract, and only the installed three package to
+`/vendor/three/`. It freezes `server.examples.examples(ROOT)` into the static file
+`api/examples` and writes `api/health` with generation unavailable. These are JSON
+files read by the viewer, not a backend; no POST endpoint is published. Existing
+viewer production controls cannot generate here. Actual live generation remains
+local through the server command above. Host the output at a dedicated hostname's
+root: root-relative URLs do not support GitHub project subpaths. Export and the
+loopback preview command do not publish the site publicly.
 
 `GET /contracts/scene.schema.json` serves the canonical file as `application/json`.
 Viewer bootstrap dynamically reads `x-web.import_map` there. Other contracts paths
@@ -92,7 +109,7 @@ Keep command and log evidence under ignored `runtime/`, outside public assets.
 Existing `server/tests/` files are retained as historical offline plumbing evidence.
 Their capability checks predate pipeline-owned preflight; they were not rerun or
 updated for this integration review. Offline GLBs do not prove model generation.
-Full pipeline integration, materials scene metadata, and viewer/browser verification
+Full pipeline integration and viewer/browser verification
 remain separate integration dependencies.
 
 | Work line | Owned files | Branch |
