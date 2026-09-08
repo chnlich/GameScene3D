@@ -1,9 +1,14 @@
 # GameFrame3D viewer
 
-The browser submits image and text inputs to the engineering API, follows its
-reported job status, and displays completed GLBs beside their original images.
-Input examples prepare a submission; scene examples display existing completed
-jobs with a prerecorded label and API-provided provenance.
+The first screen displays completed GLBs beside their original images. The first
+successful examples load opens the first scene only if the user has not started
+an input or scene operation; refreshing the list never changes that selection.
+Scene cards retain prerecorded labels and API-provided provenance. An empty scene
+list explicitly says no completed scene has been published.
+
+The collapsed production tools contain image/text submission, candidate inputs,
+service health, job progress, and status retries. Generation health does not gate
+completed scene viewing. Input examples only prepare a submission.
 
 Serve `index.html` at `/` and this directory at `/web/`. The bootstrap reads the
 engineering-owned `/contracts/scene.schema.json` and installs the `x-web` import

@@ -10,22 +10,27 @@
   <script type="module" src="/web/bootstrap.mjs"></script>
 </head>
 <body>
-  <header><a class="brand" href="/">GameFrame<span>3D</span></a><span>从画面与文字，走进场景</span></header>
+  <header><a class="brand" href="/">GameFrame<span>3D</span></a><span>旋转查看 · 原图对照</span></header>
   <main>
-    <section class="intro"><div><p class="eyebrow">生成 · 旋转 · 对照</p><h1>换个角度，看你的画面。</h1><p>上传图片、补充文字，或直接描述想看的场景。</p></div><p id="health" role="status">正在检查服务…</p><button id="check-health" type="button">检查服务</button></section>
+    <section class="intro"><div><p class="eyebrow">旋转 · 探索 · 对照</p><h1>换个角度，走进画面。</h1><p>直接探索已制作的三维场景，拖动旋转，与原图对照。</p></div></section>
     <p id="page-error" class="error" role="alert" hidden></p>
-    <form id="generate-form">
-      <div class="upload"><label for="image">参考图片 <span>PNG / JPEG / WebP</span></label><input id="image" type="file" accept="image/png,image/jpeg,image/webp"><button id="clear-image" type="button" disabled>移除图片</button><p id="input-status" role="status">也可以只输入文字。</p></div>
-      <div class="prompt"><label for="prompt">场景描述 <span>有图片时可选填</span></label><textarea id="prompt" rows="3" placeholder="描述角色、动作、空间与氛围…"></textarea></div>
-      <button id="submit" class="primary" type="submit" disabled>生成三维场景 <span aria-hidden="true">↗</span></button>
-    </form>
-    <section class="job-panel" aria-label="生成状态" aria-live="polite"><div><strong id="job-status">准备输入</strong><span id="job-origin"></span></div><p id="job-message">提交后显示服务器报告的实际步骤。</p><progress id="progress" max="1" hidden></progress><p id="metrics"></p><p id="job-error" class="error" role="alert" hidden></p><button id="retry-status" type="button" hidden>重新读取状态</button></section>
     <section class="workspace" aria-label="场景与原图对照">
-      <article class="scene-panel"><div class="panel-head"><h2 id="scene-title">三维场景</h2><button id="reset-camera" type="button" disabled>恢复视角</button></div><div id="viewport"><p id="scene-status" role="status">场景将在这里打开。也可以先体验下方预生成示例。</p><div id="canvas-host"></div></div><div class="panel-foot"><p id="camera-note">拖动旋转 · 滚轮缩放 · 右键平移<br>触屏：单指旋转，双指缩放与平移</p><button id="retry-scene" type="button" hidden>重新加载场景与原图</button><nav id="downloads" aria-label="结果下载"></nav></div></article>
-      <article class="reference-panel"><div class="panel-head"><h2>原图对照</h2><span id="image-size"></span></div><div class="reference"><img id="reference-image" alt="输入参考图片" hidden><p id="reference-empty">纯文字输入没有原图。</p></div><p id="reference-note">图片保持原始比例；未见的遮挡部分属于推断补全。</p></article>
+      <article class="scene-panel"><div class="panel-head"><h2 id="scene-title">三维场景</h2><button id="reset-camera" type="button" disabled>恢复视角</button></div><div id="viewport"><p id="scene-status" role="status">正在读取已完成场景…</p><div id="canvas-host"></div></div><div class="panel-foot"><p id="camera-note">拖动旋转 · 滚轮缩放 · 右键平移<br>触屏：单指旋转，双指缩放与平移</p><button id="retry-scene" type="button" hidden>重新加载场景与原图</button><nav id="downloads" aria-label="结果下载"></nav></div></article>
+      <article class="reference-panel"><div class="panel-head"><h2>原图对照</h2><span id="image-size"></span></div><div class="reference"><img id="reference-image" alt="输入参考图片" hidden><p id="reference-empty">当前未显示原图；纯文字场景没有原图。</p></div><p id="reference-note">图片保持原始比例；未见的遮挡部分属于推断补全。</p></article>
     </section>
     <section id="result-details" hidden><h2>场景说明</h2><p id="summary"></p><ul id="assumptions"></ul></section>
-    <section class="examples-section"><div class="section-head"><div><p class="eyebrow">先试一试</p><h2>输入素材与预生成场景</h2></div><button id="reload-examples" type="button">刷新示例</button></div><p id="examples-status" role="status">正在读取示例…</p><div id="examples"></div></section>
+    <section class="examples-section"><div class="section-head"><div><p class="eyebrow">直接打开 · 交互查看</p><h2>已完成场景</h2></div><button id="reload-examples" type="button">刷新示例</button></div><p id="examples-status" role="status">正在读取已完成场景…</p><div id="examples" class="example-grid"></div></section>
+    <details id="production-tools"><summary>制作工具 · 团队自用</summary>
+      <p>上传图片或输入文字制作新场景。查看已完成场景无需生成服务可用。</p>
+      <div class="service-health"><p id="health" role="status">正在检查服务…</p><button id="check-health" type="button">检查服务</button></div>
+      <form id="generate-form">
+        <div class="upload"><label for="image">参考图片 <span>PNG / JPEG / WebP</span></label><input id="image" type="file" accept="image/png,image/jpeg,image/webp"><button id="clear-image" type="button" disabled>移除图片</button><p id="input-status" role="status">也可以只输入文字。</p></div>
+        <div class="prompt"><label for="prompt">场景描述 <span>有图片时可选填</span></label><textarea id="prompt" rows="3" placeholder="描述角色、动作、空间与氛围…"></textarea></div>
+        <button id="submit" class="primary" type="submit" disabled>生成三维场景 <span aria-hidden="true">↗</span></button>
+      </form>
+      <section class="job-panel" aria-label="生成状态" aria-live="polite"><div><strong id="job-status">准备输入</strong><span id="job-origin"></span></div><p id="job-message">提交后显示服务器报告的实际步骤。</p><progress id="progress" max="1" hidden></progress><p id="metrics"></p><p id="job-error" class="error" role="alert" hidden></p><button id="retry-status" type="button" hidden>重新读取状态</button></section>
+      <section class="examples-section" aria-label="候选输入素材"><h2>候选输入素材 · 尚未生成</h2><p id="inputs-status" role="status"></p><div id="input-examples" class="example-grid"></div></section>
+    </details>
   </main>
   <footer>GameFrame3D · 三维结果包含推断补全，不代表对不可见细节的还原证据。</footer>
 </body>
