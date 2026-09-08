@@ -4,6 +4,7 @@ import json
 import shutil
 import subprocess
 import time
+import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Callable
@@ -13,6 +14,7 @@ from PIL import Image, ImageOps
 from pydantic import ValidationError
 
 from .codex import Codex
+from .glm import Glm
 from .meshy import Meshy, read_key
 from .models import Config, Inspection, Record, Scene
 from .runtime import Runtime, clean, digest, write_json
@@ -23,17 +25,28 @@ class Probe(Record):
 
 
 def _local_dependencies(config):
-    for label, executable in (('Codex', config.codex.executable), ('Blender', config.blender.executable)):
+    executables = [('Blender', config.blender.executable)]
+    checks = [('Blender', [config.blender.executable, '--background', '--factory-startup', '--version'])]
+    if config.inference_backend == 'codex':
+        executables.append(('Codex', config.codex.executable))
+        checks.append(('Codex login', [config.codex.executable, 'login', 'status']))
+    for label, executable in executables:
         if shutil.which(executable) is None:
             raise RuntimeError(label + ' configured executable is unavailable')
     read_key(config.meshy)
-    for label, argv in (
-        ('Blender', [config.blender.executable, '--background', '--factory-startup', '--version']),
-        ('Codex login', [config.codex.executable, 'login', 'status']),
-    ):
+    for label, argv in checks:
         completed = subprocess.run(argv, capture_output=True, text=True, timeout=30, check=False)
         if completed.returncode != 0:
             raise RuntimeError(label + ' local check failed; verify the configured installation and host login')
+    if config.inference_backend == 'glm':
+        try:
+            with urllib.request.urlopen(urllib.request.Request(config.glm.endpoint + '/models'),
+                                        timeout=config.glm.timeout_seconds) as response:
+                models = json.loads(response.read())
+        except (OSError, ValueError) as error:
+            raise RuntimeError('GLM gateway model list check failed: ' + clean(str(error))) from None
+        if config.glm.model not in [entry.get('id') for entry in models.get('data', [])]:
+            raise RuntimeError('GLM gateway does not list the configured model: ' + config.glm.model)
 
 
 def preflight(config_path: str | None) -> list[str]:
@@ -57,14 +70,14 @@ def _validate(value, definition):
     Draft202012Validator({'$ref': '#/$defs/' + definition, '$defs': contract['$defs']}).validate(value)
 
 
-def _dependencies(config, runtime, codex):
+def _dependencies(config, runtime, inference):
     _local_dependencies(config)
     directory = runtime.output / 'preflight' / runtime.attempt
     directory.mkdir(parents=True)
     runtime.process([config.blender.executable, '--background', '--factory-startup', '--version'], directory, '', 30)
-    result = codex.infer('Return {"ready": true}. This is a local inference availability check. Do not call tools.', [], Probe, 'preflight')
+    result = inference.infer('Return {"ready": true}. This is a local inference availability check. Do not call tools.', [], Probe, 'preflight')
     if not result.ready:
-        raise RuntimeError('Local Codex inference preflight failed')
+        raise RuntimeError('Local inference preflight failed')
     provider = Meshy(config.meshy, runtime)
     balance = provider._request('/openapi/v1/balance', None)
     runtime.record({'provider': 'Meshy', 'purpose': 'preflight balance', 'output': balance})
@@ -182,21 +195,27 @@ def generate(request: dict, output_dir: Path, on_progress: Callable[[dict], None
         runtime.evidence['input'] = input_evidence
         runtime.evidence['input_digest'] = digest(input_evidence)
         runtime.save()
-        codex = Codex(config.codex, runtime)
+        if config.inference_backend == 'glm':
+            inference = Glm(config.glm, runtime)
+        else:
+            inference = Codex(config.codex, runtime)
         def progress(phase, message, fraction):
             event = {'phase': phase, 'message': message, 'fraction': fraction}
             _validate(event, 'Progress')
             on_progress(event)
         progress('preflight', 'Checking local inference and Blender', 0.02)
-        _dependencies(config, runtime, codex)
-        progress('analysis', 'Astra is reconstructing the current input', 0.08)
+        _dependencies(config, runtime, inference)
+        progress('analysis', 'Reconstructing the current input', 0.08)
         analysis_prompt = _analysis_prompt(request['prompt'], aspect)
-        analysis_key = digest({'input': input_evidence, 'prompt': analysis_prompt, 'codex': config.codex.model_dump(exclude={'executable'})})
+        backend_settings = {'codex': config.codex.model_dump(exclude={'executable'})}
+        if config.inference_backend == 'glm':
+            backend_settings['glm'] = config.glm.model_dump()
+        analysis_key = digest({'input': input_evidence, 'prompt': analysis_prompt, **backend_settings})
         analysis_path = output / 'analyses' / (analysis_key + '.json')
         if analysis_path.exists():
             scene = Scene.model_validate_json(analysis_path.read_text())
         else:
-            scene = codex.infer(analysis_prompt, [] if image is None else [image], Scene, 'scene analysis')
+            scene = inference.infer(analysis_prompt, [] if image is None else [image], Scene, 'scene analysis')
             write_json(analysis_path, scene.model_dump(mode='json'))
         if aspect is not None and abs(scene.camera.aspect_ratio-aspect) > 1e-6:
             raise ValueError('Model camera aspect disagrees with input image')
@@ -226,8 +245,8 @@ def generate(request: dict, output_dir: Path, on_progress: Callable[[dict], None
                 change['applied'] = change['proposed']
                 change['checks'] = directory.relative_to(output).as_posix() + '/checks.json'
                 runtime.save()
-            progress('inspection', 'Astra is comparing the actual preview with the input', None)
-            inspection = codex.infer(
+            progress('inspection', 'Comparing the actual preview with the input', None)
+            inspection = inference.infer(
                 'Inspect the actual rendered reconstruction against the original image or prompt. Do not call tools.\n'
                 'Original prompt: ' + request['prompt'] + '\nCurrent scene: ' + scene.model_dump_json() +
                 '\nMeasured geometry, pose and camera checks: ' + json.dumps(checks) +

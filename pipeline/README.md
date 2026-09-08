@@ -6,25 +6,32 @@ optional accompanying text, or a text-only description. The repository's
 validated in `models.py` and interpreted by Blender; model output is never executed
 as Python. The viewer consumes the public result, not the manifest.
 
-Astra identifies assets, reference crops, pose goals, environment, lighting and a
-source camera. Meshy generates independent assets concurrently; text assets run
-preview then refine, and articulated assets then run rigging. Blender composes and
-renders the scene. Astra inspects the preview with the original input and returns
-actual corrections. Inspection explicitly names assets to regenerate; edits to
-transforms, pose and lighting reuse the measured mesh. Accepted scenes are exported and reopened in another Blender
+The configured inference backend identifies assets, reference crops, pose goals,
+environment, lighting and a source camera. Meshy generates independent assets
+concurrently; text assets run preview then refine, and articulated assets then run
+rigging. Blender composes and renders the scene. The backend inspects the preview
+with the original input and returns actual corrections. Inspection explicitly names
+assets to regenerate; edits to transforms, pose and lighting reuse the measured mesh.
+Accepted scenes are exported and reopened in another Blender
 process before returning success. Failed reconstructions keep their artifacts.
 
 ## Run
 
 Engineering owns root dependencies and the service launcher. This package needs
-Python with Pydantic 2, PyYAML, Pillow and jsonschema, an authenticated local Codex
-CLI, Blender with glTF import/export, and Meshy access. Copy `config.example.yaml`
+Python with Pydantic 2, PyYAML, Pillow and jsonschema, Blender with glTF
+import/export, and Meshy access. Inference runs on the backend selected by the
+required `inference_backend` setting; there is no default. The `codex` backend uses
+an authenticated local Codex CLI with the package's existing host authentication
+and no OpenAI API key. The `glm` backend posts OpenAI-compatible chat completions
+to the configured intranet GLM gateway, with base64 image input and `json_schema`
+structured output; the gateway needs no key. Copy `config.example.yaml`
 to private local storage and set explicit executable and owner-only key-file paths.
-The package uses existing Codex authentication on the host. It does not use an
-OpenAI API key. `pipeline.runner.preflight(config_path)` returns public-safe local readiness
-reasons, or `[]` when configuration, executables, host login and key-file checks
-pass. It does not run inference or make provider requests. `generate` additionally
-checks actual Astra inference and the configured Meshy endpoint before generation.
+`pipeline.runner.preflight(config_path)` returns public-safe local readiness
+reasons, or `[]` when configuration, executables, key-file and backend checks pass:
+the codex backend checks host login, the glm backend checks that the configured
+gateway answers and lists the configured model. Neither readiness pass runs
+inference, paid requests or remote mutations. `generate` additionally
+checks actual inference and the configured Meshy endpoint before generation.
 
 ```sh
 python -m pipeline --config /private/config.yaml --output /private/jobs/image \
@@ -35,12 +42,14 @@ python -m pipeline --config /private/config.yaml --output /private/jobs/text \
 
 Image-only use omits `--prompt-file`. Prompt files are read verbatim. Use a distinct
 output directory for each input. Repeat the same command to reuse content-addressed
-analysis and acknowledged Meshy submissions; inference calls and rendering attempts
-have separate directories. A resumed call derives its scene from the latest complete
-composition and inspects it again. Provider responses and poll histories preserve task IDs,
-status, consumption and timing. An unacknowledged charged submission blocks reuse
-until reconciled with the provider; it is never automatically reposted. HTTP 429
-responses use bounded backoff and honor Retry-After within the overall deadline.
+analysis (scoped to the configured inference backend, so cached analyses never cross
+backends or model settings) and acknowledged Meshy submissions; inference calls and
+rendering attempts have separate directories. A resumed call derives its scene from
+the latest complete composition and inspects it again. Provider responses and poll
+histories preserve task IDs, status, consumption and timing. An unacknowledged
+charged submission blocks reuse until reconciled with the provider; it is never
+automatically reposted. HTTP 429 responses use bounded backoff and honor Retry-After
+within the overall deadline.
 
 Spending caps apply per output directory. To authorize unlimited spending, set
 `spending.authorization` to an explicit authorization description,
@@ -52,7 +61,8 @@ USD cost remains null.
 ## Evidence and geometry
 
 The job retains original input, analyses, reference crops, sanitized provider
-receipts, inference events/usage, iteration descriptions, previews, applied changes
+receipts, per-call inference evidence (sanitized request, raw response, usage and
+timing) under `inference/`, iteration descriptions, previews, applied changes
 and geometric checks. Successful artifacts include packed `scene.blend`, embedded
 `scene.glb`, `preview.png`, `manifest.json` and `evidence.json`. Public paths are
 relative to the output directory; only the service resolves URLs. Keep private

@@ -1,10 +1,18 @@
 # Copy to a private local file and provide actual executable/key paths there.
+inference_backend: codex
 codex:
   executable: codex
   model: gpt-6-astra
   reasoning: high
   concurrency: 2
   timeout_seconds: 300
+# Required when inference_backend is glm. The gateway is intranet-only and uses no key.
+glm:
+  endpoint: https://REPLACE_WITH_GLM_GATEWAY_HOST/v1
+  model: REPLACE_WITH_GLM_MODEL_ID
+  concurrency: 2
+  timeout_seconds: 300
+  max_tokens: 8192
 meshy:
   endpoint: https://api.staging.meshy.ai
   key_file: /REPLACE_WITH_PRIVATE_KEY_FILE

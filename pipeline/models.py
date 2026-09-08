@@ -27,6 +27,14 @@ class CodexConfig(Record):
     timeout_seconds: Positive
 
 
+class GlmConfig(Record):
+    endpoint: Annotated[str, Field(pattern=r"^https?://")]
+    model: str
+    concurrency: Annotated[int, Field(ge=1)]
+    timeout_seconds: Positive
+    max_tokens: Positive
+
+
 class Spending(Record):
     authorization: str | None
     unlimited_authorized: bool
@@ -69,10 +77,18 @@ class BlenderConfig(Record):
 
 class Config(Record):
     codex: CodexConfig
+    inference_backend: Literal["codex", "glm"]
+    glm: GlmConfig | None = None
     meshy: MeshyConfig
     blender: BlenderConfig
     deadline_seconds: Positive
     correction_count: Annotated[int, Field(ge=0)]
+
+    @model_validator(mode="after")
+    def backend(self):
+        if self.inference_backend == "glm" and self.glm is None:
+            raise ValueError('GLM inference backend requires a glm configuration block')
+        return self
 
     @classmethod
     def read(cls, path):
