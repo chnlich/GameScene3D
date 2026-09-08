@@ -45,7 +45,7 @@ export class Viewer {
     host.append(this.renderer.domElement);
     this.renderer.domElement.addEventListener('webglcontextlost', event => {
       event.preventDefault();
-      reportError(new Error('WebGL 上下文丢失，请刷新页面重新加载。'));
+      reportError(new Error('WebGL context lost; reload the page.'));
     });
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x090f12);
@@ -103,7 +103,7 @@ export class Viewer {
     // The contract camera already uses final GLB coordinates. Keep the model's transforms intact.
     const bounds = new THREE.Box3().setFromObject(this.model, true);
     const sphere = bounds.getBoundingSphere(new THREE.Sphere());
-    if (sphere.radius <= 0 || !Number.isFinite(sphere.radius)) throw new Error('GLB 没有可显示的空间几何体');
+    if (sphere.radius <= 0 || !Number.isFinite(sphere.radius)) throw new Error('GLB has no displayable spatial geometry');
     this.boundsSphere = sphere;
     this.aspect = imageAspect ?? sourceCamera?.aspect_ratio ?? this.host.clientWidth / this.host.clientHeight;
     // render() refits the clipping planes after every orbit, dolly, pan and reset.
@@ -115,7 +115,7 @@ export class Viewer {
       const halfHeight = sourceCamera.orthographic_height / 2;
       this.camera = new THREE.OrthographicCamera(-halfHeight * this.aspect, halfHeight * this.aspect, halfHeight, -halfHeight, near, far);
     } else {
-      throw new Error(`未知相机投影：${sourceCamera.projection}`);
+      throw new Error(`Unknown camera projection: ${sourceCamera.projection}`);
     }
     const target = new THREE.Vector3();
     if (sourceCamera === null) {
@@ -166,6 +166,21 @@ export class Viewer {
   reset() {
     this.controls.reset();
     this.render();
+  }
+
+  attach(host) {
+    if (this.host !== host) {
+      this.resizeObserver.disconnect();
+      this.resizeObserver.observe(host);
+      this.host = host;
+    }
+    host.append(this.renderer.domElement);
+    this.resize();
+  }
+
+  detach() {
+    this.resizeObserver.disconnect();
+    this.renderer.domElement.remove();
   }
 
   resize() {

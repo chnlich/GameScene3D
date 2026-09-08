@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101719">
+  <title>GameFrame3D · Interactive Studio</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/web/style.css">
+  <script type="module" src="/web/bootstrap.mjs"></script>
+</head>
+<body data-page="studio">
+  <header><a class="brand" href="/">GameFrame<span>3D</span></a>
+    <nav class="site-nav" aria-label="Pages">
+      <a href="/">Created Scenes</a>
+      <a href="/web/studio.html" aria-current="page">Interactive Studio</a>
+    </nav>
+  </header>
+  <main>
+    <section class="intro"><div><p class="eyebrow">Rotate · Explore · Compare</p><h1>Open a finished scene from a new angle.</h1><p>Explore completed 3D scenes directly: drag to rotate and compare against the original image. Production tools for new generation stay collapsed below.</p></div></section>
+    <p id="page-error" class="error" role="alert" hidden></p>
+    <section class="workspace" aria-label="Scene and original image comparison">
+      <article class="scene-panel"><div class="panel-head"><h2 id="scene-title">3D scene</h2><button id="reset-camera" type="button" disabled>Reset view</button></div><div id="viewport"><p id="scene-status" role="status">Loading a completed scene…</p><div id="canvas-host"></div></div><div class="panel-foot"><p id="camera-note">Drag to rotate · Scroll to zoom · Right-drag to pan<br>Touch: one finger rotates, two fingers zoom and pan</p><button id="retry-scene" type="button" hidden>Reload the scene and original image</button><nav id="downloads" aria-label="Result downloads"></nav></div></article>
+      <article class="reference-panel"><div class="panel-head"><h2>Original image</h2><span id="image-size"></span></div><div class="reference"><img id="reference-image" alt="Original input image" hidden><p id="reference-empty">No original image is shown; text-only scenes have none.</p></div><p id="reference-note">The image keeps its original proportions; unseen occluded parts are inferred completions.</p></article>
+    </section>
+    <section id="result-details" hidden><h2>Scene notes</h2><p id="summary"></p><ul id="assumptions"></ul></section>
+    <section class="examples-section"><div class="section-head"><div><p class="eyebrow">Open directly · Interactive</p><h2>Completed scenes</h2></div><button id="reload-examples" type="button">Reload examples</button></div><p id="examples-status" role="status">Loading completed scenes…</p><div id="examples" class="example-grid"></div></section>
+    <details id="production-tools"><summary>Production tools · Team only</summary>
+      <p>Upload an image or enter a prompt to create a new scene. Viewing completed scenes does not require the generation service.</p>
+      <div class="service-health"><p id="health" role="status">Checking the service…</p><button id="check-health" type="button">Check service</button></div>
+      <form id="generate-form">
+        <div class="upload"><label for="image">Reference image <span>PNG / JPEG / WebP</span></label><input id="image" type="file" accept="image/png,image/jpeg,image/webp"><button id="clear-image" type="button" disabled>Remove image</button><p id="input-status" role="status">You can also enter text only.</p></div>
+        <div class="prompt"><label for="prompt">Scene description <span>Optional with an image</span></label><textarea id="prompt" rows="3" placeholder="Describe characters, action, space and atmosphere…"></textarea></div>
+        <button id="submit" class="primary" type="submit" disabled>Generate 3D scene <span aria-hidden="true">↗</span></button>
+      </form>
+      <section class="job-panel" aria-label="Generation status" aria-live="polite"><div><strong id="job-status">Preparing input</strong><span id="job-origin"></span></div><p id="job-message">The steps reported by the server appear after submission.</p><progress id="progress" max="1" hidden></progress><p id="metrics"></p><p id="job-error" class="error" role="alert" hidden></p><button id="retry-status" type="button" hidden>Read the status again</button></section>
+      <section class="examples-section" aria-label="Candidate input examples"><h2>Candidate inputs · Not yet generated</h2><p id="inputs-status" role="status"></p><div id="input-examples" class="example-grid"></div></section>
+    </details>
+  </main>
+  <footer>GameFrame3D · 3D results include inferred completions; they are not evidence of unseen detail.</footer>
+</body>
+</html>

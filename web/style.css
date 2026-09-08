@@ -352,6 +352,10 @@ canvas {
   color:#d2efaa;
   font-size:12px
 }
+.tag {
+  color:#d2efaa;
+  font-size:12px
+}
 .example dl {
   font-size:12px;
   color:#a6b8b0;
@@ -368,6 +372,236 @@ body>footer {
   font-size:12px;
   color:#879b8e;
   margin-top:22px
+}
+.site-nav {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap
+}
+.site-nav a {
+  padding:8px 14px;
+  border:1px solid #41514d;
+  border-radius:999px;
+  text-decoration:none;
+  font-size:14px;
+  color:#cfe0d4
+}
+.site-nav a:hover {
+  background:#31483e
+}
+.site-nav a[aria-current="page"] {
+  background:#2d4035;
+  border-color:#b9f18e;
+  color:#e9fbd8;
+  font-weight:600
+}
+.gallery-section {
+  margin-top:4px
+}
+.scene-list {
+  display:grid;
+  gap:26px
+}
+.scene-entry {
+  border:1px solid #34433e;
+  border-radius:12px;
+  padding:20px;
+  background:#16201c;
+  min-width:0
+}
+.entry-head {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:14px
+}
+.entry-head h3 {
+  font-size:19px;
+  margin:6px 0 4px
+}
+.entry-desc {
+  margin:0;
+  font-size:14px;
+  color:#a6b8b0;
+  overflow-wrap:anywhere
+}
+.entry-actions {
+  display:flex;
+  gap:10px;
+  flex-shrink:0;
+  flex-wrap:wrap;
+  justify-content:flex-end
+}
+.entry-actions .primary {
+  min-height:0;
+  padding:10px 14px
+}
+.entry-media {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px
+}
+.media {
+  margin:0;
+  border:1px solid #34433e;
+  border-radius:10px;
+  overflow:hidden;
+  background:#090f12;
+  display:flex;
+  flex-direction:column;
+  min-width:0
+}
+.media figcaption {
+  padding:10px 14px;
+  font-size:12px;
+  color:#a6b8b0;
+  background:#16201c;
+  border-bottom:1px solid #2c3834
+}
+.media-body {
+  flex:1;
+  min-height:0;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:440px
+}
+.media .fill {
+  width:100%;
+  height:100%;
+  object-fit:contain
+}
+.media-empty {
+  color:#7f9588;
+  padding:24px;
+  text-align:center
+}
+.viewport {
+  position:absolute;
+  inset:0;
+  overflow:hidden
+}
+.viewport-status {
+  position:absolute;
+  z-index:1;
+  inset:0;
+  margin:0;
+  display:grid;
+  place-content:center;
+  text-align:center;
+  background:#090f12e8;
+  padding:28px;
+  color:#b9cac1;
+  pointer-events:none
+}
+.viewport-status.error {
+  color:#ffc3b5
+}
+.canvas-host {
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center
+}
+.view-note {
+  margin:12px 2px 0;
+  font-size:12px;
+  color:#a6b8b0;
+  line-height:1.7;
+  overflow-wrap:anywhere
+}
+.entry-error {
+  margin-top:12px
+}
+.entry-provenance {
+  margin:16px 0 0;
+  font-size:13px;
+  color:#a6b8b0;
+  line-height:1.7;
+  display:grid;
+  grid-template-columns:max-content 1fr;
+  column-gap:14px
+}
+.entry-provenance dt {
+  color:#d3ded7
+}
+.entry-provenance dd {
+  margin:0;
+  overflow-wrap:anywhere
+}
+.entry-assumptions {
+  margin-top:14px
+}
+.entry-assumptions h4 {
+  margin:0 0 6px;
+  font-size:13px;
+  color:#d3ded7
+}
+.entry-assumptions ul {
+  margin:0;
+  padding-left:20px;
+  font-size:13px;
+  color:#a6b8b0;
+  line-height:1.7
+}
+.entry-assumptions li {
+  overflow-wrap:anywhere
+}
+.entry-foot {
+  margin-top:14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  flex-wrap:wrap
+}
+.entry-foot p {
+  margin:0;
+  font-size:12px;
+  color:#a6b8b0;
+  overflow-wrap:anywhere
+}
+.downloads {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  font-size:13px
+}
+.downloads a {
+  padding:5px 9px;
+  background:#293c30;
+  border-radius:4px
+}
+.studio-pointer {
+  margin-top:40px;
+  padding:22px;
+  border:1px solid #34433e;
+  border-radius:12px;
+  background:#19231f;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:wrap
+}
+.studio-pointer h2 {
+  font-size:19px
+}
+.studio-pointer p {
+  margin:6px 0 0;
+  font-size:14px;
+  color:#a6b8b0;
+  max-width:640px
+}
+.pointer-link {
+  display:inline-flex;
+  align-items:center;
+  text-decoration:none;
+  border-radius:7px;
+  padding:12px 18px
 }
 [hidden] {
   display:none!important
@@ -396,6 +630,18 @@ body>footer {
   }
   #viewport,.reference {
     height:420px
+  }
+  .entry-head {
+    flex-direction:column
+  }
+  .entry-actions {
+    justify-content:flex-start
+  }
+  .entry-media {
+    grid-template-columns:1fr
+  }
+  .media-body {
+    height:380px
   }
 }
 @media(max-width:540px) {
@@ -428,5 +674,14 @@ body>footer {
   #scene-title {
     max-width:65%;
     overflow-wrap:anywhere
+  }
+  .scene-entry {
+    padding:14px
+  }
+  .media-body {
+    height:300px
+  }
+  .entry-actions .primary {
+    padding:9px 12px
   }
 }

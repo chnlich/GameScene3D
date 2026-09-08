@@ -1,49 +1,51 @@
-# GameFrame3D 演示脚本
+# GameFrame3D Demo Script
 
-目标：让评委从已经完成的三维场景中看到，固定动画画面如何变成可以换角度探索的空间。现场以稳定、打开即看的交互演示为中心。
+Goal: let judges see, from the already-created 3D scenes, how a fixed animated frame becomes a space that can be explored from new angles. On stage, center on a stable, opens-instantly interactive demo.
 
-当前状态：录制前脚本。主演示优先选择用户玩过的游戏，当前以《星际争霸》的阿塔尼斯与泽拉图为主，《Dota 2》《暗黑破坏神》作为后续选材方向。Sintel 是动画短片，提灯石桥是原创文字场景，两者保留为制作流程验证素材，不优先进入主演示。所有展示场景提前制作并检查，按实际可用结果选择；页面明确标注预生成。素材来源以 ../materials/catalog.json 为准，共享接口以仓库 contracts/scene.schema.json 为准。自用 pipeline 是团队的制作工具，须完成真实端到端验证并保留制作证据，现场不要求展示上传、排队或实时生成。
+Current state: pre-recording script. The main demo prefers games the user has played; it currently centers on StarCraft's Artanis and Zeratul, with Dota 2 and Diablo as later material directions. Sintel is an animated short film and the lantern stone bridge is an original text-only scene; both remain production-pipeline validation materials and do not enter the main demo first. Every presented scene is created and checked ahead of time and chosen by actual availability; the page clearly labels scenes as prerecorded. Material provenance follows ../materials/catalog.json and the shared interface follows the repository's contracts/scene.schema.json. The self-used pipeline is the team's production tool; it must pass real end-to-end verification and keep production evidence, and the live demo does not require showing upload, queuing, or real-time generation.
 
-## 一分钟提交视频
+Show path: the showcase landing page is the Created Scenes gallery. Each entry shows the original input image beside the scene's preview; clicking "Load 3D view" opens the interactive 3D scene next to the original image. The Interactive Studio page (/web/studio.html) keeps the user-interactive generation API and the rotating viewer; it stays available but secondary and is not required on stage.
 
-| 片内时间 | 屏幕动作 | 台词与字幕 | 成片依据 |
+## One-minute submission video
+
+| In-video time | On-screen action | Lines and captions | Evidence basis |
 | --- | --- | --- | --- |
-| 0–8 秒 | 打开当天制作的主场景，从参考角度缓慢转到侧面 | 「GameFrame3D，把动画画面变成可以换角度探索的三维场景。」显示「提前生成的场景，正在实时交互」。 | 实际查看器与当天制作结果，不能用旧手工场景顶替新成果。 |
-| 8–22 秒 | 原图与结果对照，指出人物关系、姿态、道具和环境 | 「原图中的人物、动作和环境，在这里成为同一个三维场景。」只说实际保留的内容。 | 输入与输出对应，指出一项最明显的保留效果；相机未验证时称默认视角。 |
-| 22–37 秒 | 连续拖动旋转、拉近道具或角色，再拉远看整体 | 「现在可以从原图看不到的角度观察它。」 | 真实页面操作，几何与材质完整；遮挡部分属于补全。 |
-| 37–49 秒 | 切到第二个当天制作的场景，展示不同主体和构图 | 「另一张画面，或一个文字描述，也可以成为这样的场景。」按已成功制作的输入类型保留台词。 | 第二个实际完成结果，来源与输入类型清楚；没有结果时继续展示主场景细节，不伪造第二例。 |
-| 49–60 秒 | 停在最清晰的场景角度，展示项目与公开仓库地址 | 「我们今天完成了自用的场景制作流程和这套交互查看体验。」字幕列出实际新增贡献；台词可用「GLM 继续完成工具实现；场景分析和微调中已验证的 Astra 作用见对应制作记录」。模型表述须与实际制作记录一致，无可见证据不使用模型宣传句。 | 当天提交与制作记录支持新增项；模型作用只陈述实际确认的判断或修正。 |
+| 0–8 s | Open the Created Scenes page, click "Load 3D view" on the day's main scene, and rotate slowly from the reference angle to the side | "GameFrame3D turns an animated frame into a 3D scene you can explore from new angles." Show the caption "Scene created ahead of time; interaction is live." | The actual viewer and the day's production result; an old manual scene must not stand in for the new result. |
+| 8–22 s | Compare the original image with the result; point out character relationships, pose, props and environment | "The characters, action and environment in the original frame become one 3D scene here." Only state what is actually preserved. | Input and output correspond; point out the single most visible preserved effect; call it the default view when the camera is unverified. |
+| 22–37 s | Drag to rotate continuously, move closer to a prop or character, then pull back to the whole | "You can now view it from angles the original image never showed." | Real page interaction with complete geometry and materials; occluded parts are completions. |
+| 37–49 s | Switch to the second scene created today, showing a different subject and composition | "Another frame, or a text description, can also become a scene like this." Keep the line only for input types actually produced successfully. | A second actually completed result with clear source and input type; without one, keep showing main-scene details and never fake a second example. |
+| 49–60 s | Rest on the clearest scene angle; show the project and public repository address | "Today we completed our own scene production pipeline and this interactive viewing experience." Captions list the actually new contributions; the line may say "GLM carried the tool implementation forward; Astra's verified role in scene analysis and fine-tuning is documented in the corresponding production records." Model statements must match the actual production records; use no model marketing line without visible evidence. | Same-day submissions and production records support the new items; model roles are stated only as actually confirmed judgments or fixes. |
 
-60 秒是剪辑分配，不代表生成耗时。视频主要展示完成的 demo，生成过程无需录入；实际制作耗时与费用留在运行证据中。只有当天新增功能和成果进入贡献说明，旧基础明确区分。
+The 60 seconds is an editing allocation, not a generation duration. The video mainly shows the finished demo; the generation process need not be recorded, and actual production time and cost stay in the run evidence. Only same-day new features and results enter the contribution statement, clearly separated from the old base.
 
-## 三分钟现场演示
+## Three-minute live demo
 
-| 现场时间 | 操作与讲解 |
+| Live time | Action and narration |
 | --- | --- |
-| 0–25 秒 | 从已加载的主场景开始，旋转到侧面。说明用途：把喜爱的动画画面做成可探索的静态三维场景。说明场景已提前生成，现场正在操作真实三维查看器。 |
-| 25–65 秒 | 打开原图对照，指出实际保留的人物关系、动作和关键道具。切回场景，从不同角度观察这些内容。 |
-| 65–105 秒 | 拉近一个最有表现力的细节，再退回完整构图。保持连续交互，让观众看清几何、材质与空间关系。只在有经验证的相机时使用「原图视角」名称。 |
-| 105–140 秒 | 切换第二个已完成场景，展示与主场景不同的人物数量、环境或文字创作方向。若没有足够好的第二例，继续展示主场景，不以失败任务或加载等待填充时间。 |
-| 140–165 秒 | 用一句话解释团队的自用 pipeline：图片或文字进入制作工具，GLM 继续完成工具实现，场景分析和微调中已验证的 Astra 作用见对应制作记录。展示一句有证据的具体贡献；详细日志留待问答，不打开后台排队流程。 |
-| 165–180 秒 | 回到最佳场景角度，给出通过 SSH 代理可访问的 demo 与公开仓库。简述当天新增内容，结束于可继续拖动的场景。 |
+| 0–25 s | Start on the Created Scenes gallery with the main scene entry visible. Click "Load 3D view" and rotate to the side. State the purpose: turning a beloved animated frame into an explorable static 3D scene. State that scenes were generated ahead of time and the live interaction is a real 3D viewer. |
+| 25–65 s | Use the original image beside the scene to point out the actually preserved character relationships, action, and key props. Rotate the scene and observe those contents from different angles. |
+| 65–105 s | Zoom into the most expressive detail, then return to the full composition. Keep the interaction continuous so the audience sees the geometry, materials and spatial relations clearly. Use the name "source-camera view" only when the camera is verified; otherwise call it the default view. |
+| 105–140 s | Scroll to the second created scene entry, load it, and show a different character count, environment, or text-creation direction from the main scene. If no good enough second example exists, keep presenting the main scene and never fill time with failed jobs or loading waits. |
+| 140–165 s | Explain the team's self-used pipeline in one sentence: an image or a prompt enters the production tools on the Interactive Studio page, GLM carried the tool implementation forward, and Astra's verified role in scene analysis and fine-tuning is documented in the corresponding production records. Show one concrete contribution backed by evidence; leave detailed logs for Q&A and do not open background queuing flows. |
+| 165–180 s | Return to the best scene angle, give the demo address reachable through the SSH proxy and the public repository. Summarize what was added today and end on a scene that keeps being draggable. |
 
-现场不启动新生成任务。提前完成场景制作和加载检查，三分钟用于展示效果与交互。成品通过 SSH 代理访问，验证该路径下的交互与素材加载；不使用公网隧道，制作工具无需公开给观众。
+No new generation job starts on stage. Scene production and loading checks finish beforehand; the three minutes present results and interaction. The finished product is reached through the SSH proxy, and interaction and material loading are verified on that path; no public tunnel is used and the production tools need not be exposed to the audience.
 
-## 两分钟问答准备
+## Two-minute Q&A preparation
 
-| 评委问题 | 回答依据 |
+| Judge question | Answer basis |
 | --- | --- |
-| Astra 做了什么？ | 从真实制作记录中指出一个判断及其实际影响，例如主体关系、姿态或相机调整。可按需打开修正前后证据，不把调用存在等同于输出改变。后续工具实现与代码收尾转由GLM完成；此前Astra参与的开发、图像分析和场景微调按实际记录说明。 |
-| 哪些是今天做的？ | 指向当天提交与场景制作记录。旧可行性测试图是输入素材；旧手工场景如被引用，标注「已有预生成场景，姿态经人工修订」。 |
-| 这是实时生成的吗？ | 「场景提前生成，现场是实时三维交互。制作 pipeline 是团队自用工具。」如追问制作耗时，读取该次真实运行记录。 |
-| 可以换输入吗？ | 以实际端到端验证过的图片或文字用例回答，不从候选素材数量推断全部成功；不需要现场重新运行来证明。 |
-| 背面为什么长这样？ | 单帧没有提供背面证据，背面是补全；原图可见部分单独对照。 |
-| 素材能用吗？ | Sintel 原帧按 CC BY 3.0 署名；用户测试图已确认本次可使用。逐图来源和许可由素材清单提供。 |
-| 花多少钱、花多久？ | 分别读取实际制作中的模型调用记录（Astra/GLM 与 Meshy），未知项明确未知。已有余额不等于单次费用。 |
-| 能下载继续编辑吗？ | 仅在实际下载并重开验证后回答可用，说明实际提供的 GLB 或 Blender 工程；未生成的文件不宣称存在。 |
+| What did Astra do? | Point to one judgment and its actual effect from the real production records, for example subject relationships, pose, or a camera adjustment. Open before/after correction evidence on demand, and never equate a call having happened with the output changing. Later tool implementation and code finishing moved to GLM; Astra's earlier participation in development, image analysis and scene fine-tuning is described per the actual records. |
+| What was made today? | Point to the same-day submissions and scene production records. Old feasibility-test images are input material; if an old manual scene is referenced, label it "an existing prerecorded scene whose pose was manually revised". |
+| Is this generated in real time? | "The scenes were generated ahead of time; the interaction on stage is real-time 3D. The production pipeline is the team's own tool." If asked about production duration, read that run's real record. |
+| Can the input be changed? | Answer with the image or text cases actually verified end to end; never infer overall success from the number of candidate materials; no live re-run is needed to prove it. |
+| Why does the back look like this? | A single frame provides no evidence of the back; the back is a completion. Compare the parts visible in the original image separately. |
+| Can the materials be used? | Sintel frames are attributed under CC BY 3.0; the user test image is confirmed usable for this event. Per-image source and license come from the materials catalog. |
+| How much did it cost and how long did it take? | Read the actual model call records from production (Astra/GLM and Meshy) and state unknowns as unknown. A remaining balance is not a per-run cost. |
+| Can we download and keep editing? | Answer "yes" only after actually downloading and reopening a file; name the GLB or Blender project actually provided; never claim files exist that were not generated. |
 
-## 录制交接
+## Recording handover
 
-录制需要已完成的主场景、可交互查看入口、实际输入对照与当天新增贡献说明。第二个符合用户游戏偏好的高质量场景完成后纳入演示；真实制作和修正证据留存供核实与问答。观众入口不以开放生成 API 或现场实时跑新图为前置条件。
+Recording needs the finished main scene, an interactive viewing entry, the actual input comparison, and the statement of same-day new contributions. The second high-quality scene matching the user's game preference joins the demo once complete; real production and correction evidence is retained for verification and Q&A. The audience entry does not require an open generation API or running new images live.
 
-自用 pipeline 的实际端到端验证由生成工作线完成，不能用固定旧场景替代；它与现场录制分开报告。网页与素材加载通过实际集成检查后，经协调分配唯一专用静音浏览器，再录制真实页面并保留原始录屏和一分钟成片。只操作专用浏览器，不提交比赛表单。
+The self-used pipeline's real end-to-end verification is completed by the generation work line and cannot be replaced by a fixed old scene; it is reported separately from live recording. After the web page and material loading pass real integration checks, the unique dedicated muted browser is allocated by coordination, the real pages are recorded, and the original screen capture and one-minute cut are kept. Operate only the dedicated browser and never submit competition forms.

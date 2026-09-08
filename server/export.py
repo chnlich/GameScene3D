@@ -55,7 +55,7 @@ def export(output: Path):
     health = {
         "ok": True,
         "generation_available": False,
-        "generation_note": "静态展示快照，仅供查看已完成场景；生成服务仅在本地运行，此站点不提供生成接口。",
+        "generation_note": "Static display snapshot for viewing completed scenes only; the generation service runs locally and this site exposes no generation endpoint.",
     }
     validate("Health", health)
     public_safe(health)
