@@ -1,0 +1,64 @@
+{
+  "title": "File verification for the Sintel cave-dragon recreation",
+  "artifact": "cave_dragon.glb",
+  "sha256": "1d63b1a5a8d62226295b18c68d63b22d9710c4b17b502a8a2c40a1ee6e155170",
+  "bytes": 13632096,
+  "provenance": "Sintel (Blender open movie), 1080p master frame copied byte-for-byte as delivered by the build session; the exact source frame number was not re-verified during this import. License CC BY 3.0 with the required attribution, verbatim: Sintel © Blender Foundation | durian.blender.org",
+  "production": "The 3D scene is a production recreation, not an end-to-end pipeline output: assets were generated with Meshy, the scene was assembled in Blender, and crystal materials, local lighting and framing were refined by Astra directly writing and executing Blender build scripts (build evidence in evidence_astra.html).",
+  "current_file_checks": {
+    "glb_version": 2,
+    "header_length_matches_file": true,
+    "mesh_count": 71,
+    "node_count": 77,
+    "material_count": 9,
+    "camera_count": 1,
+    "external_asset_uris": [],
+    "extensions_used": [
+      "KHR_draco_mesh_compression",
+      "KHR_materials_transmission",
+      "KHR_materials_emissive_strength",
+      "KHR_materials_specular",
+      "KHR_lights_punctual"
+    ],
+    "extensions_required": [
+      "KHR_draco_mesh_compression",
+      "KHR_lights_punctual"
+    ]
+  },
+  "input_frame": {
+    "file": "sintel_cave_frame.png",
+    "sha256": "53f23069a3cd69c29cd9e2f9fc5f4776ed06dbcfbb49e046d93dc7838cfb4c61",
+    "bytes": 1887486,
+    "dimensions": [1920, 818],
+    "note": "Source frame copied as delivered by the build session; its sha256 does not match any cataloged mirror frame, so the exact source frame number was not re-verified during this import."
+  },
+  "preview_image": {
+    "file": "cave_dragon_hero.png",
+    "sha256": "3cccdd85c7ea3040e86de7c0562a822c0aa3476c32ad0030d64432e169b4e2bb",
+    "bytes": 2579123,
+    "dimensions": [1920, 1080],
+    "note": "Hero render used as the catalog card preview."
+  },
+  "central_object": "The dragon is the scene's identified subject: a human figure faces the dragon inside a crystal-lit cave, matching the source frame.",
+  "background": "The scene contains only what the source frame shows: the human figure, the dragon, and the cave environment lit by the crystals.",
+  "verification": {
+    "summary": "verification_astra.json states: hero render at resolution [1920, 1080] with 128 samples on the CUDA device, missing_external_images []. The exported web GLB was reimported and verified in a fresh Blender process: 13,632,096 bytes, 71 mesh objects, Draco-compressed primitives, all textures at most 2k.",
+    "hero_render": {
+      "resolution": [1920, 1080],
+      "samples": 128,
+      "device": "CUDA",
+      "missing_external_images": 0
+    },
+    "blender_reopen": true,
+    "textures_packed": true,
+    "reimport_verified_web_glb": true
+  },
+  "camera_note": "The GLB embeds one camera, the eye-aligned build camera used while composing the scene (verification_astra.json records the final render camera at location [-0.8999999761581421, -2.700000047683716, 1.3200000524520874], 50 mm lens, shift_x -0.34); it is not a verified source-image camera. The catalog camera field is null and the viewer's reset returns to the default view.",
+  "validation_limits": [
+    "Browser visual test of the published web render was not performed in this import.",
+    "Visual acceptance of the scene is pending human review.",
+    "Costs are recorded in the private build session, not USD; cost_usd is null."
+  ],
+  "elapsed_seconds": null,
+  "cost_usd": null
+}

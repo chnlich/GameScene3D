@@ -149,6 +149,44 @@
     "changes": "GLB decimated and textures re-encoded for web display; original uncompressed GLB retained outside the repository; before/after renders unmodified."
   },
   {
+    "file": "images/sintel_cave_frame.png",
+    "title": "Facing the Dragon in the Cave",
+    "category": "Character + environment",
+    "selection": "Astra-refined production",
+    "visible_checks": "Human figure facing a dragon inside a crystal-lit cave",
+    "bytes": 1887486,
+    "sha256": "53f23069a3cd69c29cd9e2f9fc5f4776ed06dbcfbb49e046d93dc7838cfb4c61",
+    "dimensions": [
+      1920,
+      818
+    ],
+    "generated_scene": {
+      "title": "Facing the Dragon in the Cave",
+      "summary": "Recreated from a Sintel frame: assets generated with Meshy, scene assembled in Blender, then crystal materials, local lighting and framing refined by directly editing build scripts. Not an end-to-end pipeline output.",
+      "artifacts": {
+        "glb": "../scenes/cave_dragon.glb",
+        "original": "images/sintel_cave_frame.png",
+        "preview": "../scenes/cave_dragon_hero.png",
+        "evidence": "../scenes/cave_dragon_evidence.json",
+        "blend": null,
+        "manifest": null
+      },
+      "camera": null,
+      "assumptions": [
+        "Crystal materials, local lighting and framing were refined by directly editing build scripts; the exact source frame index was not re-verified during this import.",
+        "The GLB embeds a build camera aligned by eye to the source framing; the viewer reset returns to the default view, not a verified source-image camera."
+      ],
+      "elapsed_seconds": null,
+      "cost_usd": null,
+      "cost_note": "Costs recorded in the private build session; not USD."
+    },
+    "source": "Sintel (Blender open movie), 1080p master frame, media.xiph.org mirror",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "attribution": "Sintel © Blender Foundation | durian.blender.org",
+    "changes": "Source frame copied as delivered by the build session. The 3D scene is a Meshy-assisted Blender recreation refined by script edits; it is not an end-to-end pipeline output."
+  },
+  {
     "file": "images/sintel_00000960.png",
     "title": "Traveler in the snow",
     "category": "Single-character environment",
