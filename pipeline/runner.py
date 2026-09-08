@@ -321,7 +321,11 @@ def generate(request: dict, output_dir: Path, on_progress: Callable[[dict], None
                 'A regenerated asset has NEW measured dimensions: do not apply size compensation measured on its old mesh. '
                 'Simple unit primitives have exact dimensions and can replace contaminated environment meshes. '
                 'Asset descriptions in image mode do not override crop contents. To replace contaminated image geometry '
-                'using a description, set reference_crop to null and name the asset in regenerate_assets.',
+                'using a description, set reference_crop to null and name the asset in regenerate_assets. '
+                'Copy the corrected scene\'s landmarks array verbatim from the Current scene: same asset ids, points '
+                'and image_xy values, no additions, no removals, no value changes. Landmark targets are observations '
+                'of the input image, not design choices, so corrections move assets, lights and camera to satisfy the '
+                'given targets and never edit the targets.',
                 ([image] if image is not None else []) + [directory / 'preview.png'], Inspection, 'render inspection')
             write_json(directory / 'inspection.json', inspection.model_dump(mode='json'))
             if inspection.corrected_scene is None:
