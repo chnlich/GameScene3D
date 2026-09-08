@@ -41,6 +41,7 @@ export class Viewer {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 0.85;
     host.append(this.renderer.domElement);
     this.renderer.domElement.addEventListener('webglcontextlost', event => {
       event.preventDefault();
@@ -52,12 +53,20 @@ export class Viewer {
     const room = new RoomEnvironment();
     this.environment = pmrem.fromScene(room, 0.04);
     this.scene.environment = this.environment.texture;
+    this.scene.environmentIntensity = 0.35;
     room.dispose();
     pmrem.dispose();
-    this.scene.add(new THREE.HemisphereLight(0xd9e7f4, 0x536452, 2));
-    const light = new THREE.DirectionalLight(0xffffff, 3);
-    light.position.set(4, 8, 6);
-    this.scene.add(light);
+    this.scene.add(new THREE.HemisphereLight(0xc8d9ed, 0x34423e, 0.6));
+    for (const [color, intensity, x, y, z] of [
+      [0xdde7ff, 2, -4, 8, 6],
+      [0x96b6e0, 1.2, 4, 5, -4],
+      [0xc5dfd3, 0.5, -5, 3, -3],
+      [0xdce8ff, 0.9, 0, 4, 8],
+    ]) {
+      const light = new THREE.DirectionalLight(color, intensity);
+      light.position.set(x, y, z);
+      this.scene.add(light);
+    }
     this.draco = new DRACOLoader();
     this.draco.setDecoderPath(decoderPath);
     this.draco.setWorkerLimit(1);
@@ -92,16 +101,16 @@ export class Viewer {
     this.model = gltf.scene;
     this.scene.add(this.model);
     // The contract camera already uses final GLB coordinates. Keep the model's transforms intact.
-    const sphere = new THREE.Box3().setFromObject(this.model).getBoundingSphere(new THREE.Sphere());
+    const bounds = new THREE.Box3().setFromObject(this.model, true);
+    const sphere = bounds.getBoundingSphere(new THREE.Sphere());
     if (sphere.radius <= 0 || !Number.isFinite(sphere.radius)) throw new Error('GLB 没有可显示的空间几何体');
+    this.boundsSphere = sphere;
     this.aspect = imageAspect ?? sourceCamera?.aspect_ratio ?? this.host.clientWidth / this.host.clientHeight;
-    const distance = sourceCamera
-      ? new THREE.Vector3().fromArray(sourceCamera.position).distanceTo(sphere.center)
-      : sphere.radius * 3;
-    const near = Math.max(sphere.radius * 0.00001, 0.000001);
-    const far = Math.max(distance + sphere.radius * 100, near * 1000);
+    // render() refits the clipping planes after every orbit, dolly, pan and reset.
+    const near = sphere.radius / 250;
+    const far = sphere.radius * 2;
     if (sourceCamera === null || sourceCamera.projection === 'perspective') {
-      this.camera = new THREE.PerspectiveCamera(sourceCamera === null ? 45 : sourceCamera.fov_degrees, this.aspect, near, far);
+      this.camera = new THREE.PerspectiveCamera(sourceCamera === null ? 38 : sourceCamera.fov_degrees, this.aspect, near, far);
     } else if (sourceCamera.projection === 'orthographic') {
       const halfHeight = sourceCamera.orthographic_height / 2;
       this.camera = new THREE.OrthographicCamera(-halfHeight * this.aspect, halfHeight * this.aspect, halfHeight, -halfHeight, near, far);
@@ -110,11 +119,35 @@ export class Viewer {
     }
     const target = new THREE.Vector3();
     if (sourceCamera === null) {
+      // Textured or skinned meshes are a display heuristic, independent of asset names.
+      const subject = new THREE.Box3();
+      this.model.traverse(object => {
+        if (!object.isMesh) return;
+        const materials = Array.isArray(object.material) ? object.material : [object.material];
+        if (object.isSkinnedMesh || materials.some(material => material.map)) subject.expandByObject(object, true);
+      });
+      // An absent or zero-size subject cannot define a view; use all geometry instead.
+      const subjectRadius = subject.getBoundingSphere(new THREE.Sphere()).radius;
+      const frame = subjectRadius > 0 && Number.isFinite(subjectRadius) ? subject : bounds;
+      target.copy(frame.getCenter(new THREE.Vector3()));
       const halfVertical = THREE.MathUtils.degToRad(this.camera.fov / 2);
       const halfHorizontal = Math.atan(Math.tan(halfVertical) * this.aspect);
-      const fitDistance = sphere.radius / Math.sin(Math.min(halfVertical, halfHorizontal)) * 1.1;
-      this.camera.position.copy(sphere.center).add(new THREE.Vector3(1, 0.65, 1.5).normalize().multiplyScalar(fitDistance));
-      target.copy(sphere.center);
+      const direction = new THREE.Vector3(4, 4, 14.5).normalize();
+      const right = new THREE.Vector3().crossVectors(this.camera.up, direction).normalize();
+      const up = new THREE.Vector3().crossVectors(direction, right);
+      let fitDistance = 0;
+      // Fit all eight corners in camera space, leaving 12% horizontal and 26% vertical room.
+      for (const x of [frame.min.x, frame.max.x]) {
+        for (const y of [frame.min.y, frame.max.y]) {
+          for (const z of [frame.min.z, frame.max.z]) {
+            const corner = new THREE.Vector3(x, y, z).sub(target);
+            fitDistance = Math.max(fitDistance,
+              corner.dot(direction) + Math.abs(corner.dot(right)) / (Math.tan(halfHorizontal) * 0.88),
+              corner.dot(direction) + Math.abs(corner.dot(up)) / (Math.tan(halfVertical) * 0.74));
+          }
+        }
+      }
+      this.camera.position.copy(target).addScaledVector(direction, fitDistance);
     } else {
       this.camera.position.fromArray(sourceCamera.position);
       this.camera.up.fromArray(sourceCamera.up);
@@ -143,7 +176,14 @@ export class Viewer {
   }
 
   render() {
-    if (this.camera) this.renderer.render(this.scene, this.camera);
+    if (!this.camera) return;
+    const { center, radius } = this.boundsSphere;
+    // Radius / 250 gives ~0.05 for a 12-unit scene; close inspection lowers it to 1% of target distance.
+    this.camera.near = Math.min(radius / 250, this.camera.position.distanceTo(this.controls.target) / 100);
+    // The whole scene sphere stays inside far at any orbit/pan/dolly distance, with 10% radius slack.
+    this.camera.far = this.camera.position.distanceTo(center) + radius * 1.1;
+    this.camera.updateProjectionMatrix();
+    this.renderer.render(this.scene, this.camera);
   }
 
   dispose() {
