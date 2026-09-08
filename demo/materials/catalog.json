@@ -37,6 +37,45 @@
     "changes": "Reference frame copied unmodified; the GLB is a Draco-compressed export."
   },
   {
+    "file": "images/sintel_fire_frame.png",
+    "title": "Shaman and Girl by the Fire Cauldron",
+    "category": "Character + environment",
+    "selection": "Astra-refined production",
+    "visible_checks": "Shaman and girl at a fire cauldron at night, hut wall and props, warm firelight",
+    "bytes": 1204237,
+    "sha256": "0b0426c6ad939865584333a6bf8d0fea2f5ac50559e9ee04496d746a17259c82",
+    "dimensions": [
+      1920,
+      818
+    ],
+    "generated_scene": {
+      "title": "Shaman and Girl by the Fire Cauldron",
+      "summary": "Recreated from a Sintel frame: assets generated with Meshy from frame crops, scene assembled in Blender, composition refined interactively. Not an end-to-end pipeline output. Honest limits: the flame is a simple geometric cone that differs from the fire in the source frame, and mesh silhouettes still differ from the frame.",
+      "artifacts": {
+        "glb": "../scenes/fire_cauldron.glb",
+        "original": "images/sintel_fire_frame.png",
+        "preview": "../scenes/fire_cauldron_hero.png",
+        "evidence": "../scenes/fire_cauldron_evidence.json",
+        "blend": null,
+        "manifest": null
+      },
+      "camera": null,
+      "assumptions": [
+        "The flame is a geometric cone and differs from the fire in the source frame.",
+        "Mesh silhouettes still differ from the source frame.",
+        "The GLB embeds a build camera aligned by eye to the source framing; the viewer reset returns to the default view, not a verified source-image camera."
+      ],
+      "elapsed_seconds": null,
+      "cost_usd": null,
+      "cost_note": "Meshy usage recorded as credits in the private build session; not USD."
+    },
+    "source": "Sintel (Blender open movie), 1080p master frame 2800, media.xiph.org mirror",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "attribution": "Sintel © Blender Foundation | durian.blender.org",
+    "changes": "Source frame copied unmodified. The 3D scene is a Meshy-assisted Blender recreation refined interactively; it is not an end-to-end pipeline output."
+  },
+  {
     "file": "images/sintel_wall_frame.png",
     "title": "Girl on the City Wall at Sunset",
     "category": "Character + environment",

@@ -1,0 +1,60 @@
+{
+  "title": "File verification for the Sintel fire-cauldron recreation",
+  "artifact": "fire_cauldron.glb",
+  "sha256": "d4cce0dcf3157509a305b319bb329b4d1058c80562087edad4031b714b3d155f",
+  "bytes": 27151124,
+  "provenance": "Sintel (Blender open movie), 1080p master frame 2800, copied byte-for-byte from the public media.xiph.org mirror. License CC BY 3.0 with the required attribution, verbatim: Sintel © Blender Foundation | durian.blender.org",
+  "production": "The 3D scene is a production recreation, not an end-to-end pipeline output: the girl, shaman, cauldron fire, bowl, and wall panel were generated with Meshy image-to-3D from crops of the source frame, the scene was assembled in Blender, and the composition was refined interactively over five rounds with Astra assistance.",
+  "current_file_checks": {
+    "glb_version": 2,
+    "header_length_matches_file": true,
+    "mesh_count": 131,
+    "node_count": 142,
+    "material_count": 15,
+    "camera_count": 1,
+    "external_asset_uris": [],
+    "extensions_used": [
+      "KHR_draco_mesh_compression",
+      "KHR_materials_emissive_strength",
+      "KHR_materials_specular",
+      "KHR_lights_punctual"
+    ],
+    "extensions_required": [
+      "KHR_draco_mesh_compression",
+      "KHR_lights_punctual"
+    ]
+  },
+  "input_frame": {
+    "file": "sintel_fire_frame.png",
+    "sha256": "0b0426c6ad939865584333a6bf8d0fea2f5ac50559e9ee04496d746a17259c82",
+    "bytes": 1204237,
+    "dimensions": [1920, 818],
+    "note": "Source frame 2800 copied unmodified; the pixels are a byte copy downloaded from the media.xiph.org mirror."
+  },
+  "preview_image": {
+    "file": "fire_cauldron_hero.png",
+    "sha256": "c3986af48bfddf4a107ef292f4e0bb93af85570e8f51ce6744be48a21d9ead8c",
+    "bytes": 1888780,
+    "dimensions": [1920, 818],
+    "note": "Hero render (128 samples, 1920x818) used as the catalog card preview."
+  },
+  "scene_content": "The scene contains the shaman and the girl at the fire cauldron at night, with the hut wall and props; warm firelight as in the source frame.",
+  "verification": {
+    "summary": "The web GLB was checked by header parse (version, counts, extensions, no external URIs) and cross-checked against the build session's delivery validation; all textures are packed inline with no missing external images, and the scene haze was excluded from the export.",
+    "glb_header_valid": true,
+    "missing_external_images": 0,
+    "haze_excluded": true,
+    "render_samples": 128,
+    "render_resolution": [1920, 818]
+  },
+  "camera_note": "The GLB embeds one camera, an eye-aligned build camera used while composing the scene; it is not a verified source-image camera. The catalog camera field is null and the viewer's reset returns to the default view.",
+  "validation_limits": [
+    "From the build session's delivery validation: mesh silhouettes and geometric flames remain different from source (Astra render visual review).",
+    "From the build session's delivery validation: browser visual test not performed.",
+    "The flame is a simple geometric cone and differs from the fire in the source frame.",
+    "Meshy usage is recorded as credits in the private build session receipts, not USD; cost_usd is null.",
+    "The original high-poly build evidence is retained in the private build session, not in this repository."
+  ],
+  "elapsed_seconds": null,
+  "cost_usd": null
+}
