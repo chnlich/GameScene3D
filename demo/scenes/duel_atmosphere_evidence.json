@@ -1,9 +1,9 @@
 {
-  "title": "双人决斗 · 废墟氛围版的文件核验",
+  "title": "File verification for the two-character duel · ruins atmosphere version",
   "artifact": "duel_atmosphere.glb",
   "sha256": "ad8a872120d17e89acd86c30d915379da3cd8f11177b95909c9249a96a1a1c5c",
   "bytes": 13493872,
-  "provenance": "用户选定的演示示例，来自 session c52d0f28-b9de-4aac-b606-8c843cf77f1e 的 cg_duel_atmosphere 产物；《星际争霸II》开场CG（YouTube RDp2JCorZLA）红绿光刃对撞段落 01:54–01:57 的静态重建。角色模型为 Meshy 生成后筛选，再经 Blender 重塑，非游戏原生资产。不是当前自动流水线的端到端输出。",
+  "provenance": "User-selected demo example, from the cg_duel_atmosphere artifact of session c52d0f28-b9de-4aac-b606-8c843cf77f1e; a static recreation of the red/green light-blade clash at 01:54–01:57 in the StarCraft II opening cinematic (YouTube RDp2JCorZLA). Character models were generated with Meshy, screened, then reworked in Blender — not original game assets. Not an end-to-end output of the current automated pipeline.",
   "current_file_checks": {
     "glb_version": 2,
     "header_length_matches_file": true,
@@ -21,11 +21,11 @@
     "sha256": "401d6939eaf06c33b2368465c1582893800b8d7ec389e23644f19c7bfc162fef",
     "bytes": 578081,
     "dimensions": [1920, 1080],
-    "note": "重建所用的参考帧中段；参考帧未修改，仅复制。"
+    "note": "Mid-clip reference frame used for the recreation; the reference frame was copied unmodified."
   },
   "verification": {
     "source_session": "c52d0f28-b9de-4aac-b606-8c843cf77f1e",
-    "summary": "独立 Blender 5.2.1 LTS 进程重开 cg_duel_atmosphere.blend 渲染验证：8 张纹理全部内嵌打包，无缺失外部图片；人物骨骼位置检查确认未变。",
+    "summary": "An independent Blender 5.2.1 LTS process reopened cg_duel_atmosphere.blend and rendered for verification: all 8 textures are packed inline with no missing external images; a character bone-position check confirmed the pose is unchanged.",
     "blender_reopen": true,
     "textures_packed": true,
     "packed_image_count": 8,
@@ -34,10 +34,10 @@
     "render_resolution": [1920, 1080]
   },
   "validation_limits": [
-    "GLB不含相机；查看器重置恢复的是默认视角，不是原图相机。",
-    "这是用户选定的生成示例（Meshy 资产经 Blender 重塑），不是当前自动流水线的端到端输出。",
-    "环境仍是原CG意象的静态重建，机位与原动画不同。",
-    "没有可靠的每次生成耗时或费用记录。"
+    "The GLB contains no camera; the viewer's reset restores the default view, not the source-image camera.",
+    "This is a user-selected generated example (Meshy assets reworked in Blender), not an end-to-end output of the current automated pipeline.",
+    "The environment remains a static recreation of the original cinematic imagery; the camera differs from the original animation.",
+    "No reliable per-generation time or cost records exist."
   ],
   "elapsed_seconds": null,
   "cost_usd": null

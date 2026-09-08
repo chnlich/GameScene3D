@@ -1,9 +1,9 @@
 {
-  "title": "已有双人交手场景的文件核验",
+  "title": "File verification for the preexisting two-character duel scene",
   "artifact": "duel_manual.glb",
   "sha256": "bcf457e25e9a3da4a1dac11787f8c2c71985e1ddeba7dbc3bc7475c9a919b842",
   "bytes": 37626624,
-  "provenance": "项目方先前可行性测试场景，姿态经人工修订；不是当前自动生成流程的输出。",
+  "provenance": "Prior feasibility-test scene from the project team, with manually refined poses; not an output of the current automated generation pipeline.",
   "current_file_checks": {
     "glb_version": 2,
     "header_length_matches_file": true,
@@ -26,9 +26,9 @@
     "mobile_overflow": false
   },
   "validation_limits": [
-    "历史查看器记录不等于当前集成网页验证通过。",
-    "GLB不含相机；旧查看器重置恢复的是默认视角，不是经验证的原图相机。",
-    "没有可靠历史生成耗时、费用或当前流程Astra调用证据。"
+    "Historical viewer records are not equivalent to validation passing on the current integrated web page.",
+    "The GLB contains no camera; the old viewer's reset restores the default view, not a verified source-image camera.",
+    "No reliable historical generation time, cost, or evidence of current-pipeline Astra calls exists."
   ],
   "elapsed_seconds": null,
   "cost_usd": null

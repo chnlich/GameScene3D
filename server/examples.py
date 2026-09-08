@@ -43,7 +43,7 @@ def examples(root: Path):
         example.update(
             id=hashlib.sha256(entry["file"].encode()).hexdigest()[:24],
             kind="input",
-            description=f"{entry['category']}：{entry['visible_checks']}",
+            description=f"{entry['category']}: {entry['visible_checks']}",
             input={"prompt": "", "image_url": "/demo/" + quote(reference, safe="/")},
         )
         validate("Example", example)

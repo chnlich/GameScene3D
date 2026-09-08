@@ -1,10 +1,10 @@
 [
   {
     "file": "images/user_test_duel.png",
-    "title": "双人光刃交手",
-    "category": "双人动作",
-    "selection": "优先",
-    "visible_checks": "两人左右关系、红绿光刃、弓步、神殿地面",
+    "title": "Two-character light-blade duel",
+    "category": "Two-character action",
+    "selection": "Priority",
+    "visible_checks": "Both characters' left/right placement, red and green light blades, lunging poses, temple floor",
     "bytes": 2588317,
     "sha256": "1f05902f40655d98819cf34f58ed537a23e99ae334d945df7f02addb3ac24f7a",
     "dimensions": [
@@ -12,8 +12,8 @@
       1080
     ],
     "generated_scene": {
-      "title": "已有双人交手场景",
-      "summary": "已有预生成场景，姿态经人工修订。参考图是该旧场景的渲染，不是当前自动流程的生成结果。",
+      "title": "Preexisting two-character duel scene",
+      "summary": "A preexisting prerecorded scene with manually refined poses. The reference image is a render of that older scene, not an output of the current automated pipeline.",
       "artifacts": {
         "glb": "../scenes/duel_manual.glb",
         "original": "images/user_test_duel.png",
@@ -24,26 +24,26 @@
       },
       "camera": null,
       "assumptions": [
-        "旧查看器默认相机不是原图相机。",
-        "当前条目是历史作品复用，未执行新的自动生成。"
+        "The old viewer's default camera is not the source-image camera.",
+        "This entry reuses prior work; no new automated generation was run."
       ],
       "elapsed_seconds": null,
       "cost_usd": null,
-      "cost_note": "缺少可靠历史计费记录，费用未知。"
+      "cost_note": "No reliable historical billing records exist; cost is unknown."
     },
-    "source": "项目方提供的双人交手可行性测试渲染",
-    "license": "项目方明确确认本次可使用；不另行授予通用开源许可",
-    "attribution": "项目方可行性测试素材；角色为 StarCraft 相关形象",
-    "changes": "渲染像素未修改；仅移除含本地路径的 PNG File 文本元数据。source_sha256 保留交接原文件校验值，sha256 对应公开文件。该图是本次流程的候选输入，不是新流程的输出证据。",
+    "source": "Feasibility-test two-character duel render provided by the project team",
+    "license": "Explicitly approved for this use by the project team; no general open-source license is granted",
+    "attribution": "Project team feasibility-test material; characters are StarCraft-related likenesses",
+    "changes": "Render pixels unmodified; only PNG File text metadata containing local paths was removed. source_sha256 keeps the checksum of the handoff original, while sha256 refers to the published file. This image is a candidate input for the current pipeline, not evidence of its output.",
     "license_url": null,
     "source_sha256": "0f49e672b5d04c91dd1e2de21acaa64cbbbac74399e23b902e8d8b94d1205788"
   },
   {
     "file": "images/sintel_00000960.png",
-    "title": "雪地旅人",
-    "category": "单人环境",
-    "selection": "优先",
-    "visible_checks": "面部朝向、披风轮廓、雪山与岩石",
+    "title": "Traveler in the snow",
+    "category": "Single-character environment",
+    "selection": "Priority",
+    "visible_checks": "Face direction, cloak silhouette, snowy mountains and rocks",
     "bytes": 956642,
     "sha256": "85c1633310f93c785d843b945ba014c29025f995adbec131a4ac991a0ce639ef",
     "dimensions": [
@@ -56,14 +56,14 @@
     "license_url": "https://creativecommons.org/licenses/by/3.0/",
     "license_evidence": "https://media.xiph.org/sintel/README.txt",
     "attribution": "Sintel © Blender Foundation | durian.blender.org",
-    "changes": "原帧未修改，镜像 PNG 字节原样复制。"
+    "changes": "Original frame unmodified; PNG bytes copied verbatim from the mirror."
   },
   {
     "file": "images/sintel_00001440.png",
-    "title": "雪地倒坐与长矛",
-    "category": "单人姿态与道具",
-    "selection": "候选",
-    "visible_checks": "坐姿、后方长矛、雪地坡面",
+    "title": "Sitting in the snow with a spear",
+    "category": "Single-character pose and props",
+    "selection": "Candidate",
+    "visible_checks": "Sitting pose, spear behind the back, snowy slope",
     "bytes": 1191964,
     "sha256": "345b0b8b4fb78149ea4c41c3f8e211c4bda793ae570df200f663bff8a6a6ae0c",
     "dimensions": [
@@ -76,14 +76,14 @@
     "license_url": "https://creativecommons.org/licenses/by/3.0/",
     "license_evidence": "https://media.xiph.org/sintel/README.txt",
     "attribution": "Sintel © Blender Foundation | durian.blender.org",
-    "changes": "原帧未修改，镜像 PNG 字节原样复制。"
+    "changes": "Original frame unmodified; PNG bytes copied verbatim from the mirror."
   },
   {
     "file": "images/sintel_00002880.png",
-    "title": "暖光室内肖像",
-    "category": "单人近景",
-    "selection": "候选",
-    "visible_checks": "面部朝向、肩甲、暖光与暗背景",
+    "title": "Warm-lit indoor portrait",
+    "category": "Single-character close-up",
+    "selection": "Candidate",
+    "visible_checks": "Face direction, shoulder armor, warm light against a dark background",
     "bytes": 876156,
     "sha256": "b034a3325cffbe2e6c57d0ac4c075e33195f3ad8838f3493cb502ad49c73e86e",
     "dimensions": [
@@ -96,14 +96,14 @@
     "license_url": "https://creativecommons.org/licenses/by/3.0/",
     "license_evidence": "https://media.xiph.org/sintel/README.txt",
     "attribution": "Sintel © Blender Foundation | durian.blender.org",
-    "changes": "原帧未修改，镜像 PNG 字节原样复制。"
+    "changes": "Original frame unmodified; PNG bytes copied verbatim from the mirror."
   },
   {
     "file": "images/sintel_00004320.png",
-    "title": "攀爬城镇屋檐",
-    "category": "人物与建筑",
-    "selection": "优先",
-    "visible_checks": "抓握位置、屋檐高度、建筑透视",
+    "title": "Climbing the town eaves",
+    "category": "Character and architecture",
+    "selection": "Priority",
+    "visible_checks": "Handhold placement, eave height, building perspective",
     "bytes": 2433268,
     "sha256": "fcb91f8a463bf78fb37e6b25c48f5d781a706459185f7e427a3a2be1a0f3164d",
     "dimensions": [
@@ -116,14 +116,14 @@
     "license_url": "https://creativecommons.org/licenses/by/3.0/",
     "license_evidence": "https://media.xiph.org/sintel/README.txt",
     "attribution": "Sintel © Blender Foundation | durian.blender.org",
-    "changes": "原帧未修改，镜像 PNG 字节原样复制。"
+    "changes": "Original frame unmodified; PNG bytes copied verbatim from the mirror."
   },
   {
     "file": "images/sintel_00007200.png",
-    "title": "城墙上俯身休息",
-    "category": "人物与远景",
-    "selection": "优先",
-    "visible_checks": "弯腰姿态、双手靠膝、城市远景",
+    "title": "Resting, bent over a city wall",
+    "category": "Character and distant view",
+    "selection": "Priority",
+    "visible_checks": "Bent-over pose, hands resting on knees, distant cityscape",
     "bytes": 994422,
     "sha256": "88bc1d70d4845c7916f213487766c56efef3ddf6ef9c2e4f4f1b0ef3a63a1a84",
     "dimensions": [
@@ -136,14 +136,14 @@
     "license_url": "https://creativecommons.org/licenses/by/3.0/",
     "license_evidence": "https://media.xiph.org/sintel/README.txt",
     "attribution": "Sintel © Blender Foundation | durian.blender.org",
-    "changes": "原帧未修改，镜像 PNG 字节原样复制。"
+    "changes": "Original frame unmodified; PNG bytes copied verbatim from the mirror."
   },
   {
     "file": "images/sintel_00012000.png",
-    "title": "洞穴中的人和龙",
-    "category": "多主体环境",
-    "selection": "候选",
-    "visible_checks": "近处人物与远处龙、岩桥、水晶、景深",
+    "title": "Human and dragon in a cave",
+    "category": "Multi-subject environment",
+    "selection": "Candidate",
+    "visible_checks": "Nearby figure with distant dragon, rock bridge, crystals, depth of field",
     "bytes": 1139469,
     "sha256": "48726848f6a3ea63f9b5b8268b86eca8398d434d6e1ad3f53aab7b678316ac75",
     "dimensions": [
@@ -156,14 +156,14 @@
     "license_url": "https://creativecommons.org/licenses/by/3.0/",
     "license_evidence": "https://media.xiph.org/sintel/README.txt",
     "attribution": "Sintel © Blender Foundation | durian.blender.org",
-    "changes": "原帧未修改，镜像 PNG 字节原样复制。"
+    "changes": "Original frame unmodified; PNG bytes copied verbatim from the mirror."
   },
   {
     "file": "images/starcraft_clash_ref.png",
-    "title": "星际争霸II 双人决斗",
-    "category": "双人动作",
-    "selection": "演示主打",
-    "visible_checks": "两名角色、红绿光刃、废墟环境",
+    "title": "StarCraft II two-character duel",
+    "category": "Two-character action",
+    "selection": "Featured demo",
+    "visible_checks": "Two characters, red and green light blades, ruined environment",
     "bytes": 578081,
     "sha256": "401d6939eaf06c33b2368465c1582893800b8d7ec389e23644f19c7bfc162fef",
     "dimensions": [
@@ -171,8 +171,8 @@
       1080
     ],
     "generated_scene": {
-      "title": "双人决斗 · 废墟氛围版",
-      "summary": "用户选定的演示示例：Meshy 资产经筛选后由 Blender 重塑的静态三维场景；不是当前自动流水线的端到端输出。",
+      "title": "Two-character duel · ruins atmosphere version",
+      "summary": "User-selected demo example: a static 3D scene built from screened Meshy assets reworked in Blender; not an end-to-end output of the current automated pipeline.",
       "artifacts": {
         "glb": "../scenes/duel_atmosphere.glb",
         "original": "images/starcraft_clash_ref.png",
@@ -183,16 +183,16 @@
       },
       "camera": null,
       "assumptions": [
-        "GLB 不含相机；查看器重置恢复默认视角，不是原图相机。"
+        "The GLB contains no camera; the viewer's reset returns to the default view, not the source-image camera."
       ],
       "elapsed_seconds": null,
       "cost_usd": null,
-      "cost_note": "缺少可靠的生成费用记录，费用未知。"
+      "cost_note": "No reliable generation cost records exist; cost is unknown."
     },
-    "source": "《星际争霸II》开场CG（YouTube RDp2JCorZLA）参考帧",
-    "license": "用户明确选定本次演示可用；公开再分发许可未另行核实",
+    "source": "Reference frame from the StarCraft II opening cinematic (YouTube RDp2JCorZLA)",
+    "license": "Explicitly selected by the user for this demo; public redistribution permission not separately verified",
     "license_url": null,
-    "attribution": "场景为 StarCraft II CG 意象的静态重建；角色模型为 Meshy 生成后筛选重塑，非游戏原生资产",
-    "changes": "参考帧未修改仅复制；GLB 为 Draco 压缩导出版。"
+    "attribution": "The scene is a static recreation of StarCraft II cinematic imagery; character models were generated with Meshy, screened, and reworked — not original game assets",
+    "changes": "Reference frame copied unmodified; the GLB is a Draco-compressed export."
   }
 ]
