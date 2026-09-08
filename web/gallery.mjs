@@ -295,6 +295,7 @@ class Gallery {
         else if (example.kind !== 'input') throw new Error(`Unknown example kind: ${example.kind}`);
       }
       this.closeViewer();
+      this.states.clear();
       $('scenes').replaceChildren(...scenes.map(example => this.buildEntry(example)));
       text('scenes-status', scenes.length === 0
         ? 'No created scenes have been published yet. The Interactive Studio can generate new ones.'
