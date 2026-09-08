@@ -5,8 +5,8 @@
     "category": "双人动作",
     "selection": "优先",
     "visible_checks": "两人左右关系、红绿光刃、弓步、神殿地面",
-    "bytes": 2588451,
-    "sha256": "0f49e672b5d04c91dd1e2de21acaa64cbbbac74399e23b902e8d8b94d1205788",
+    "bytes": 2588317,
+    "sha256": "1f05902f40655d98819cf34f58ed537a23e99ae334d945df7f02addb3ac24f7a",
     "dimensions": [
       1920,
       1080
@@ -34,8 +34,9 @@
     "source": "项目方提供的双人交手可行性测试渲染",
     "license": "项目方明确确认本次可使用；不另行授予通用开源许可",
     "attribution": "项目方可行性测试素材；角色为 StarCraft 相关形象",
-    "changes": "原渲染未修改。该图是本次流程的候选输入，不是新流程的输出证据。",
-    "license_url": null
+    "changes": "渲染像素未修改；仅移除含本地路径的 PNG File 文本元数据。source_sha256 保留交接原文件校验值，sha256 对应公开文件。该图是本次流程的候选输入，不是新流程的输出证据。",
+    "license_url": null,
+    "source_sha256": "0f49e672b5d04c91dd1e2de21acaa64cbbbac74399e23b902e8d8b94d1205788"
   },
   {
     "file": "images/sintel_00000960.png",
