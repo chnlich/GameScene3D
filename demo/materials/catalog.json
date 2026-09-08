@@ -157,5 +157,42 @@
     "license_evidence": "https://media.xiph.org/sintel/README.txt",
     "attribution": "Sintel © Blender Foundation | durian.blender.org",
     "changes": "原帧未修改，镜像 PNG 字节原样复制。"
+  },
+  {
+    "file": "images/starcraft_clash_ref.png",
+    "title": "星际争霸II 双人决斗",
+    "category": "双人动作",
+    "selection": "演示主打",
+    "visible_checks": "两名角色、红绿光刃、废墟环境",
+    "bytes": 578081,
+    "sha256": "401d6939eaf06c33b2368465c1582893800b8d7ec389e23644f19c7bfc162fef",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "generated_scene": {
+      "title": "双人决斗 · 废墟氛围版",
+      "summary": "用户选定的演示示例：Meshy 资产经筛选后由 Blender 重塑的静态三维场景；不是当前自动流水线的端到端输出。",
+      "artifacts": {
+        "glb": "../scenes/duel_atmosphere.glb",
+        "original": "images/starcraft_clash_ref.png",
+        "preview": "../scenes/duel_atmosphere_hero.png",
+        "evidence": "../scenes/duel_atmosphere_evidence.json",
+        "blend": null,
+        "manifest": null
+      },
+      "camera": null,
+      "assumptions": [
+        "GLB 不含相机；查看器重置恢复默认视角，不是原图相机。"
+      ],
+      "elapsed_seconds": null,
+      "cost_usd": null,
+      "cost_note": "缺少可靠的生成费用记录，费用未知。"
+    },
+    "source": "《星际争霸II》开场CG（YouTube RDp2JCorZLA）参考帧",
+    "license": "用户明确选定本次演示可用；公开再分发许可未另行核实",
+    "license_url": null,
+    "attribution": "场景为 StarCraft II CG 意象的静态重建；角色模型为 Meshy 生成后筛选重塑，非游戏原生资产",
+    "changes": "参考帧未修改仅复制；GLB 为 Draco 压缩导出版。"
   }
 ]

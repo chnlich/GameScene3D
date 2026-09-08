@@ -1,0 +1,44 @@
+{
+  "title": "双人决斗 · 废墟氛围版的文件核验",
+  "artifact": "duel_atmosphere.glb",
+  "sha256": "ad8a872120d17e89acd86c30d915379da3cd8f11177b95909c9249a96a1a1c5c",
+  "bytes": 13493872,
+  "provenance": "用户选定的演示示例，来自 session c52d0f28-b9de-4aac-b606-8c843cf77f1e 的 cg_duel_atmosphere 产物；《星际争霸II》开场CG（YouTube RDp2JCorZLA）红绿光刃对撞段落 01:54–01:57 的静态重建。角色模型为 Meshy 生成后筛选，再经 Blender 重塑，非游戏原生资产。不是当前自动流水线的端到端输出。",
+  "current_file_checks": {
+    "glb_version": 2,
+    "header_length_matches_file": true,
+    "mesh_count": 18,
+    "material_count": 18,
+    "camera_count": 0,
+    "external_asset_uris": [],
+    "extensions_used": [
+      "KHR_draco_mesh_compression",
+      "KHR_materials_emissive_strength"
+    ]
+  },
+  "input_frame": {
+    "file": "starcraft_clash_ref.png",
+    "sha256": "401d6939eaf06c33b2368465c1582893800b8d7ec389e23644f19c7bfc162fef",
+    "bytes": 578081,
+    "dimensions": [1920, 1080],
+    "note": "重建所用的参考帧中段；参考帧未修改，仅复制。"
+  },
+  "verification": {
+    "source_session": "c52d0f28-b9de-4aac-b606-8c843cf77f1e",
+    "summary": "独立 Blender 5.2.1 LTS 进程重开 cg_duel_atmosphere.blend 渲染验证：8 张纹理全部内嵌打包，无缺失外部图片；人物骨骼位置检查确认未变。",
+    "blender_reopen": true,
+    "textures_packed": true,
+    "packed_image_count": 8,
+    "missing_external_images": 0,
+    "pose_audit": "character_bone_positions_unchanged: true",
+    "render_resolution": [1920, 1080]
+  },
+  "validation_limits": [
+    "GLB不含相机；查看器重置恢复的是默认视角，不是原图相机。",
+    "这是用户选定的生成示例（Meshy 资产经 Blender 重塑），不是当前自动流水线的端到端输出。",
+    "环境仍是原CG意象的静态重建，机位与原动画不同。",
+    "没有可靠的每次生成耗时或费用记录。"
+  ],
+  "elapsed_seconds": null,
+  "cost_usd": null
+}
