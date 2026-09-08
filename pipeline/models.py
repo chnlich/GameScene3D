@@ -213,9 +213,13 @@ class Inspection(Record):
     observations: list[str]
     correction_reason: str | None
     corrected_scene: Scene | None
+    regenerate_assets: list[str]
 
     @model_validator(mode="after")
     def reason(self):
         if self.corrected_scene is not None and not self.correction_reason:
             raise ValueError("Corrections need an explanation")
+        ids = set() if self.corrected_scene is None else {asset.id for asset in self.corrected_scene.assets}
+        if len(self.regenerate_assets) != len(set(self.regenerate_assets)) or not set(self.regenerate_assets) <= ids:
+            raise ValueError('Regeneration must name unique assets in the corrected scene')
         return self

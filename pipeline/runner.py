@@ -125,10 +125,12 @@ Include meaningful lighting, environment, and all required geometric identities.
 Return only the schema-conforming scene description.'''
 
 
-def _assets(scene, image, provider, concurrency):
+def _assets(scene, image, provider, concurrency, existing, regenerate):
     with ThreadPoolExecutor(max_workers=concurrency) as executor:
-        tasks = {executor.submit(provider.asset, asset, image): asset for asset in scene.assets}
-        results = {}
+        tasks = {executor.submit(provider.asset, asset, image): asset for asset in scene.assets
+                 if asset.id not in existing or asset.id in regenerate}
+        results = {asset.id: existing[asset.id] for asset in scene.assets
+                   if asset.id in existing and asset.id not in regenerate}
         for future in as_completed(tasks):
             asset = tasks[future]
             try:
@@ -205,7 +207,16 @@ def generate(request: dict, output_dir: Path, on_progress: Callable[[dict], None
         write_json(output / 'analysis.json', scene.model_dump(mode='json'))
         provider = Meshy(config.meshy, runtime)
         progress('assets', 'Generating required assets within the authorized budget', 0.2)
-        assets = _assets(scene, image, provider, config.meshy.concurrency)
+        completed = [p for p in (output / 'iterations').glob('*/*/scene.json')
+                     if all(p.with_name(name).exists() for name in ('checks.json', 'preview.png', 'scene.glb', 'scene.blend'))]
+        if completed:
+            latest = max(completed, key=lambda p: p.stat().st_mtime)
+            job = json.loads(latest.read_text())
+            scene = Scene.model_validate(job['scene'])
+            assets = job['assets']
+            runtime.record({'purpose': 'resume composed scene', 'source': latest.relative_to(output).as_posix()})
+        else:
+            assets = _assets(scene, image, provider, config.meshy.concurrency, {}, set())
         accepted = False
         for index in range(config.correction_count + 1):
             progress('composition', 'Composing and rendering scene iteration ' + str(index), None)
@@ -215,6 +226,7 @@ def generate(request: dict, output_dir: Path, on_progress: Callable[[dict], None
                 change['applied'] = change['proposed']
                 change['checks'] = directory.relative_to(output).as_posix() + '/checks.json'
                 runtime.save()
+            progress('inspection', 'Astra is comparing the actual preview with the input', None)
             inspection = codex.infer(
                 'Inspect the actual rendered reconstruction against the original image or prompt. Do not call tools.\n'
                 'Original prompt: ' + request['prompt'] + '\nCurrent scene: ' + scene.model_dump_json() +
@@ -222,7 +234,15 @@ def generate(request: dict, output_dir: Path, on_progress: Callable[[dict], None
                 '\nFirst attached image is original when present; last is rendered preview. '
                 'Return honest observations and acceptable. If changes are needed, supply corrected_scene '
                 'and correction_reason; otherwise use null for both. Corrections must address actual errors. '
-                'Preserve authoritative image aspect and observed landmark targets. Do not fabricate improvement.',
+                'Preserve authoritative image aspect and observed landmark targets. Do not fabricate improvement. '
+                'regenerate_assets explicitly names only assets whose actual mesh must be replaced. '
+                'Reuse all other existing meshes for transform, scale, height, pose and lighting edits. '
+                'Preserve their descriptions, crops and articulated flags. Updating prose alone does not replace a mesh. '
+                'A new asset or changed crop/articulated mode requires explicit regeneration. '
+                'A regenerated asset has NEW measured dimensions: do not apply size compensation measured on its old mesh. '
+                'Simple unit primitives have exact dimensions and can replace contaminated environment meshes. '
+                'Asset descriptions in image mode do not override crop contents. To replace contaminated image geometry '
+                'using a description, set reference_crop to null and name the asset in regenerate_assets.',
                 ([image] if image is not None else []) + [directory / 'preview.png'], Inspection, 'render inspection')
             write_json(directory / 'inspection.json', inspection.model_dump(mode='json'))
             if inspection.corrected_scene is None:
@@ -240,14 +260,22 @@ def generate(request: dict, output_dir: Path, on_progress: Callable[[dict], None
                 raise ValueError('Correction changed authoritative image aspect')
             if corrected.landmarks != scene.landmarks:
                 raise ValueError('Correction changed observed reprojection targets')
+            previous_assets = {asset.id: asset for asset in scene.assets}
+            regenerate = set(inspection.regenerate_assets)
+            for asset in corrected.assets:
+                previous = previous_assets.get(asset.id)
+                if (previous is None or asset.reference_crop != previous.reference_crop or
+                        asset.articulated != previous.articulated) and asset.id not in regenerate:
+                    raise ValueError('New geometry, crop or articulated mode requires explicit asset regeneration: ' + asset.id)
             runtime.evidence['changes'].append({'iteration': index+1, 'reason': inspection.correction_reason,
                                                  'proposed': changed, 'applied': [],
+                                                 'regenerate_assets': sorted(regenerate),
+                                                 'reused_assets': sorted(asset.id for asset in corrected.assets if asset.id not in regenerate),
                                                  'before': directory.relative_to(output).as_posix() + '/scene.json',
                                                  'after': f'iterations/{runtime.attempt}/{index+1}/scene.json'})
             runtime.save()
             scene = corrected
-            # Provider receipts reuse unchanged assets; changed descriptions/crops regenerate.
-            assets = _assets(scene, image, provider, config.meshy.concurrency)
+            assets = _assets(scene, image, provider, config.meshy.concurrency, assets, regenerate)
         if not accepted:
             raise RuntimeError('Scene was not accepted')
         for name in ('scene.blend', 'scene.glb', 'preview.png'):

@@ -10,7 +10,8 @@ Astra identifies assets, reference crops, pose goals, environment, lighting and 
 source camera. Meshy generates independent assets concurrently; text assets run
 preview then refine, and articulated assets then run rigging. Blender composes and
 renders the scene. Astra inspects the preview with the original input and returns
-actual corrections. Accepted scenes are exported and reopened in another Blender
+actual corrections. Inspection explicitly names assets to regenerate; edits to
+transforms, pose and lighting reuse the measured mesh. Accepted scenes are exported and reopened in another Blender
 process before returning success. Failed reconstructions keep their artifacts.
 
 ## Run
@@ -35,7 +36,8 @@ python -m pipeline --config /private/config.yaml --output /private/jobs/text \
 Image-only use omits `--prompt-file`. Prompt files are read verbatim. Use a distinct
 output directory for each input. Repeat the same command to reuse content-addressed
 analysis and acknowledged Meshy submissions; inference calls and rendering attempts
-have separate directories. Provider responses and poll histories preserve task IDs,
+have separate directories. A resumed call derives its scene from the latest complete
+composition and inspects it again. Provider responses and poll histories preserve task IDs,
 status, consumption and timing. An unacknowledged charged submission blocks reuse
 until reconciled with the provider; it is never automatically reposted. HTTP 429
 responses use bounded backoff and honor Retry-After within the overall deadline.
