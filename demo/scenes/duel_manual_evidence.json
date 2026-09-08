@@ -1,0 +1,35 @@
+{
+  "title": "已有双人交手场景的文件核验",
+  "artifact": "duel_manual.glb",
+  "sha256": "bcf457e25e9a3da4a1dac11787f8c2c71985e1ddeba7dbc3bc7475c9a919b842",
+  "bytes": 37626624,
+  "provenance": "项目方先前可行性测试场景，姿态经人工修订；不是当前自动生成流程的输出。",
+  "current_file_checks": {
+    "glb_version": 2,
+    "header_length_matches_file": true,
+    "mesh_count": 211,
+    "material_count": 16,
+    "camera_count": 0,
+    "external_asset_uris": [],
+    "extensions_used": [
+      "KHR_draco_mesh_compression",
+      "KHR_materials_emissive_strength"
+    ]
+  },
+  "historical_viewer_checks": {
+    "console_errors": [],
+    "page_errors": [],
+    "side_changes_camera": true,
+    "reset_restores_camera": true,
+    "drag_rotates_camera": true,
+    "wheel_changes_camera": true,
+    "mobile_overflow": false
+  },
+  "validation_limits": [
+    "历史查看器记录不等于当前集成网页验证通过。",
+    "GLB不含相机；旧查看器重置恢复的是默认视角，不是经验证的原图相机。",
+    "没有可靠历史生成耗时、费用或当前流程Astra调用证据。"
+  ],
+  "elapsed_seconds": null,
+  "cost_usd": null
+}

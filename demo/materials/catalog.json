@@ -1,0 +1,160 @@
+[
+  {
+    "file": "images/user_test_duel.png",
+    "title": "双人光刃交手",
+    "category": "双人动作",
+    "selection": "优先",
+    "visible_checks": "两人左右关系、红绿光刃、弓步、神殿地面",
+    "bytes": 2588451,
+    "sha256": "0f49e672b5d04c91dd1e2de21acaa64cbbbac74399e23b902e8d8b94d1205788",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "generated_scene": {
+      "title": "已有双人交手场景",
+      "summary": "已有预生成场景，姿态经人工修订。参考图是该旧场景的渲染，不是当前自动流程的生成结果。",
+      "artifacts": {
+        "glb": "../scenes/duel_manual.glb",
+        "original": "images/user_test_duel.png",
+        "preview": "images/user_test_duel.png",
+        "evidence": "../scenes/duel_manual_evidence.json",
+        "blend": null,
+        "manifest": null
+      },
+      "camera": null,
+      "assumptions": [
+        "旧查看器默认相机不是原图相机。",
+        "当前条目是历史作品复用，未执行新的自动生成。"
+      ],
+      "elapsed_seconds": null,
+      "cost_usd": null,
+      "cost_note": "缺少可靠历史计费记录，费用未知。"
+    },
+    "source": "项目方提供的双人交手可行性测试渲染",
+    "license": "项目方明确确认本次可使用；不另行授予通用开源许可",
+    "attribution": "项目方可行性测试素材；角色为 StarCraft 相关形象",
+    "changes": "原渲染未修改。该图是本次流程的候选输入，不是新流程的输出证据。",
+    "license_url": null
+  },
+  {
+    "file": "images/sintel_00000960.png",
+    "title": "雪地旅人",
+    "category": "单人环境",
+    "selection": "优先",
+    "visible_checks": "面部朝向、披风轮廓、雪山与岩石",
+    "bytes": 956642,
+    "sha256": "85c1633310f93c785d843b945ba014c29025f995adbec131a4ac991a0ce639ef",
+    "dimensions": [
+      1920,
+      818
+    ],
+    "generated_scene": null,
+    "source": "https://media.xiph.org/sintel/sintel-1080-png/00000960.png",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "license_evidence": "https://media.xiph.org/sintel/README.txt",
+    "attribution": "Sintel © Blender Foundation | durian.blender.org",
+    "changes": "原帧未修改，镜像 PNG 字节原样复制。"
+  },
+  {
+    "file": "images/sintel_00001440.png",
+    "title": "雪地倒坐与长矛",
+    "category": "单人姿态与道具",
+    "selection": "候选",
+    "visible_checks": "坐姿、后方长矛、雪地坡面",
+    "bytes": 1191964,
+    "sha256": "345b0b8b4fb78149ea4c41c3f8e211c4bda793ae570df200f663bff8a6a6ae0c",
+    "dimensions": [
+      1920,
+      818
+    ],
+    "generated_scene": null,
+    "source": "https://media.xiph.org/sintel/sintel-1080-png/00001440.png",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "license_evidence": "https://media.xiph.org/sintel/README.txt",
+    "attribution": "Sintel © Blender Foundation | durian.blender.org",
+    "changes": "原帧未修改，镜像 PNG 字节原样复制。"
+  },
+  {
+    "file": "images/sintel_00002880.png",
+    "title": "暖光室内肖像",
+    "category": "单人近景",
+    "selection": "候选",
+    "visible_checks": "面部朝向、肩甲、暖光与暗背景",
+    "bytes": 876156,
+    "sha256": "b034a3325cffbe2e6c57d0ac4c075e33195f3ad8838f3493cb502ad49c73e86e",
+    "dimensions": [
+      1920,
+      818
+    ],
+    "generated_scene": null,
+    "source": "https://media.xiph.org/sintel/sintel-1080-png/00002880.png",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "license_evidence": "https://media.xiph.org/sintel/README.txt",
+    "attribution": "Sintel © Blender Foundation | durian.blender.org",
+    "changes": "原帧未修改，镜像 PNG 字节原样复制。"
+  },
+  {
+    "file": "images/sintel_00004320.png",
+    "title": "攀爬城镇屋檐",
+    "category": "人物与建筑",
+    "selection": "优先",
+    "visible_checks": "抓握位置、屋檐高度、建筑透视",
+    "bytes": 2433268,
+    "sha256": "fcb91f8a463bf78fb37e6b25c48f5d781a706459185f7e427a3a2be1a0f3164d",
+    "dimensions": [
+      1920,
+      818
+    ],
+    "generated_scene": null,
+    "source": "https://media.xiph.org/sintel/sintel-1080-png/00004320.png",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "license_evidence": "https://media.xiph.org/sintel/README.txt",
+    "attribution": "Sintel © Blender Foundation | durian.blender.org",
+    "changes": "原帧未修改，镜像 PNG 字节原样复制。"
+  },
+  {
+    "file": "images/sintel_00007200.png",
+    "title": "城墙上俯身休息",
+    "category": "人物与远景",
+    "selection": "优先",
+    "visible_checks": "弯腰姿态、双手靠膝、城市远景",
+    "bytes": 994422,
+    "sha256": "88bc1d70d4845c7916f213487766c56efef3ddf6ef9c2e4f4f1b0ef3a63a1a84",
+    "dimensions": [
+      1920,
+      818
+    ],
+    "generated_scene": null,
+    "source": "https://media.xiph.org/sintel/sintel-1080-png/00007200.png",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "license_evidence": "https://media.xiph.org/sintel/README.txt",
+    "attribution": "Sintel © Blender Foundation | durian.blender.org",
+    "changes": "原帧未修改，镜像 PNG 字节原样复制。"
+  },
+  {
+    "file": "images/sintel_00012000.png",
+    "title": "洞穴中的人和龙",
+    "category": "多主体环境",
+    "selection": "候选",
+    "visible_checks": "近处人物与远处龙、岩桥、水晶、景深",
+    "bytes": 1139469,
+    "sha256": "48726848f6a3ea63f9b5b8268b86eca8398d434d6e1ad3f53aab7b678316ac75",
+    "dimensions": [
+      1920,
+      818
+    ],
+    "generated_scene": null,
+    "source": "https://media.xiph.org/sintel/sintel-1080-png/00012000.png",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "license_evidence": "https://media.xiph.org/sintel/README.txt",
+    "attribution": "Sintel © Blender Foundation | durian.blender.org",
+    "changes": "原帧未修改，镜像 PNG 字节原样复制。"
+  }
+]
