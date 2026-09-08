@@ -45,7 +45,10 @@ output directory for each input. Repeat the same command to reuse content-addres
 analysis (scoped to the configured inference backend, so cached analyses never cross
 backends or model settings) and acknowledged Meshy submissions; inference calls and
 rendering attempts have separate directories. A resumed call derives its scene from
-the latest complete composition and inspects it again. Provider responses and poll
+the latest complete composition and inspects it again. When the first composition of
+a run is unchanged — the scene, assets, Blender settings and composing implementation
+all match a previously rendered iteration — that iteration's retained artifacts are
+reopened instead of rendered again, and the reuse is recorded in the evidence. Provider responses and poll
 histories preserve task IDs, status, consumption and timing. An unacknowledged
 charged submission blocks reuse until reconciled with the provider; it is never
 automatically reposted. HTTP 429 responses use bounded backoff and honor Retry-After
@@ -61,7 +64,8 @@ python -m pipeline --config /private/config.yaml --output /private/jobs/image \
 This operation reads the retained Blender project and GLB in a fresh process,
 checks geometry and materials, and renders `verification/<id>/reopen.png` from
 the scene camera. It makes no model or provider calls and does not mark visual
-quality accepted. Its invocation, report and logs remain beside the job.
+quality accepted. The reopened iteration's comparison preview is refreshed
+beside it. Its invocation, report and logs remain beside the job.
 
 Spending caps apply per output directory. To authorize unlimited spending, set
 `spending.authorization` to an explicit authorization description,
