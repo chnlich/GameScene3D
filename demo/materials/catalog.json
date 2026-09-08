@@ -80,7 +80,7 @@
     "title": "Girl on the City Wall at Sunset",
     "category": "Character + environment",
     "selection": "Astra-refined production",
-    "visible_checks": "Girl seen from behind on the wall top, plain stone column beside her, brick tower at right, birds, empty sunset sky",
+    "visible_checks": "Girl seen from behind on the wall top, an out-of-focus mid-ground object beside her, brick tower at right, birds, empty sunset sky",
     "bytes": 679057,
     "sha256": "ef1826fc51ff55b572194a2c38aa8b0b3b7e567b95a6db007f6992b81a2270d3",
     "dimensions": [
@@ -89,7 +89,7 @@
     ],
     "generated_scene": {
       "title": "Girl on the City Wall at Sunset",
-      "summary": "Recreated from a Sintel frame: character generated with Meshy image-to-3D from frame crops, environment built procedurally in Blender, composition refined interactively. Not an end-to-end pipeline output. The scene contains only what the source frame shows: the mid-ground object is out of focus with unidentifiable species and is rebuilt as a plain stone column; the background is the frame's empty sky with nothing added.",
+      "summary": "Recreated from a Sintel frame: character generated with Meshy image-to-3D from frame crops, environment built procedurally in Blender, composition refined interactively. Not an end-to-end pipeline output. The scene contains only what the source frame shows: the mid-ground object is out of focus in the source frame and its species cannot be identified, so it is rebuilt from its readable silhouette and is not claimed to be a dragon; the background is the frame's empty sky with nothing added.",
       "artifacts": {
         "glb": "../scenes/wall_scene.glb",
         "original": "images/sintel_wall_frame.png",
@@ -100,7 +100,7 @@
       },
       "camera": null,
       "assumptions": [
-        "The mid-ground object is out of focus in the source frame with unidentifiable species; it is rebuilt as a plain stone column.",
+        "The mid-ground object is out of focus in the source frame and its species cannot be identified, so it is rebuilt from its readable silhouette and is not claimed to be a dragon.",
         "The background is the source frame's empty sky; no structures absent from the original were added.",
         "The GLB embeds a build camera aligned by eye to the source framing; the viewer reset returns to the default view, not a verified source-image camera."
       ],

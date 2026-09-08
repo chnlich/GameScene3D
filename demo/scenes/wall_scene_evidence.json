@@ -4,7 +4,7 @@
   "sha256": "15d5f95165fbc3eabad4f7d85c3152dfcd7e92ccc8a556b0fc69699c2f5f1707",
   "bytes": 16463456,
   "provenance": "Sintel (Blender open movie), 1080p master frame 7280, copied byte-for-byte from the public media.xiph.org mirror. License CC BY 3.0 with the required attribution, verbatim: Sintel © Blender Foundation | durian.blender.org",
-  "production": "The 3D scene is a production recreation, not an end-to-end pipeline output: the character was generated with Meshy image-to-3D from crops of the source frame, the environment (wall, stone column, brick tower, leaning beams, birds, crenellations, sky) was built procedurally in Blender, and the composition was refined interactively with Astra assistance.",
+  "production": "The 3D scene is a production recreation, not an end-to-end pipeline output: the character was generated with Meshy image-to-3D from crops of the source frame, the environment (wall, brick tower, leaning beams, birds, crenellations, sky) was built procedurally in Blender, the out-of-focus mid-ground object was rebuilt from its readable silhouette (species not identified and not claimed to be a dragon), and the composition was refined interactively with Astra assistance.",
   "current_file_checks": {
     "glb_version": 2,
     "header_length_matches_file": true,
@@ -34,8 +34,8 @@
     "dimensions": [1920, 818],
     "note": "Hero render used as the catalog card preview."
   },
-  "central_object": "The central mid-ground object is out of focus in the source frame and its species is unidentifiable; it was rebuilt as a plain weathered stone column. Earlier interpretations of this object that added subjects absent from the frame were removed on source-fidelity grounds.",
-  "background": "The scene contains only what the source frame shows: the girl from behind on the wall top, the plain stone column beside her, the brick tower with leaning beams at the right edge, birds, crenellations, and the frame's empty golden sunset sky. Nothing was added to the background.",
+  "central_object": "The central mid-ground object is out of focus in the source frame and its species is unidentifiable; it was rebuilt from its readable silhouette; species not identified and not claimed to be a dragon. Earlier interpretations of this object that added subjects absent from the frame were removed on source-fidelity grounds.",
+  "background": "The scene contains only what the source frame shows: the girl from behind on the wall top, the out-of-focus mid-ground object beside her, the brick tower with leaning beams at the right edge, birds, crenellations, and the frame's empty golden sunset sky. Nothing was added to the background.",
   "verification": {
     "summary": "A fresh Blender 5.2.1 LTS process reopened the saved scene file for verification: all textures are packed inline with no missing external images, and the exported web GLB was reimported and verified in a fresh Blender process.",
     "blender_reopen": true,
