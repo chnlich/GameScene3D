@@ -119,25 +119,33 @@ export class Viewer {
     }
     const target = new THREE.Vector3();
     if (sourceCamera === null) {
-      // Default view: sphere-fit the content the viewer is meant to see (textured or
-      // skinned meshes; the whole model when no such subject exists) with a 15% margin.
-      // Whole-scene bounds alone would frame floor planes, shrinking the subject.
-      const subject = new THREE.Box3();
+      // Characters lead the frame: when skinned meshes exist they define the view and a
+      // wide radius keeps the environment as background; otherwise textured or skinned
+      // meshes stand in. Whole-scene bounds alone would frame floor planes.
+      const skinned = new THREE.Box3();
+      const textured = new THREE.Box3();
       this.model.traverse(object => {
         if (!object.isMesh) return;
         const materials = Array.isArray(object.material) ? object.material : [object.material];
-        if (object.isSkinnedMesh || materials.some(material => material.map)) subject.expandByObject(object, true);
+        if (object.isSkinnedMesh) skinned.expandByObject(object, true);
+        if (object.isSkinnedMesh || materials.some(material => material.map)) textured.expandByObject(object, true);
       });
-      const subjectSphere = subject.getBoundingSphere(new THREE.Sphere());
-      const frame = subjectSphere.radius > 0 && Number.isFinite(subjectSphere.radius) ? subject : bounds;
-      const frameSphere = frame === subject ? subjectSphere : sphere;
-      target.copy(frame.getCenter(new THREE.Vector3()));
+      const skinnedSphere = skinned.getBoundingSphere(new THREE.Sphere());
+      const useCharacters = skinnedSphere.radius > 0 && Number.isFinite(skinnedSphere.radius);
+      const frameBox = useCharacters ? skinned : textured;
+      const frameMargin = useCharacters ? 2.35 : 1.15;
+      let frameSphere = frameBox.getBoundingSphere(new THREE.Sphere());
+      if (!(frameSphere.radius > 0) || !Number.isFinite(frameSphere.radius)) {
+        frameBox.copy(bounds);
+        frameSphere = sphere;
+      }
+      target.copy(frameBox.getCenter(new THREE.Vector3()));
       const halfVertical = THREE.MathUtils.degToRad(this.camera.fov / 2);
       const halfHorizontal = Math.atan(Math.tan(halfVertical) * this.aspect);
       // Portrait canvases have a narrower horizontal fov; fit the tighter of the two.
       const fitHalf = Math.min(halfVertical, halfHorizontal);
       const direction = new THREE.Vector3(4, 4, 14.5).normalize();
-      const distance = (frameSphere.radius / Math.sin(fitHalf)) * 1.15;
+      const distance = (frameSphere.radius / Math.sin(fitHalf)) * frameMargin;
       this.camera.position.copy(target).addScaledVector(direction, distance);
     } else {
       this.camera.position.fromArray(sourceCamera.position);
