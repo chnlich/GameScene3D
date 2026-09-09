@@ -66,6 +66,7 @@ class MeshyConfig(Record):
     request_timeout_seconds: Positive
     remesh_route: Literal['/openapi/v1/remesh', '/openapi/v2/remesh']
     rig_target_polycount: Annotated[int, Field(ge=100, le=300000)]
+    rigging_enabled: bool = True
     spending: Spending
 
 

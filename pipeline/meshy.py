@@ -116,6 +116,8 @@ class Meshy:
             try:
                 if receipt.exists():
                     response = json.loads(receipt.read_text())
+                    self.runtime.record({'provider': 'Meshy', 'purpose': 'submission receipt reuse',
+                                         'route': route, 'call': key})
                 else:
                     if (directory / 'request.json').exists():
                         raise RuntimeError('Ambiguous prior Meshy submission; reconcile provider task before retry')
@@ -158,6 +160,8 @@ class Meshy:
 
     def download(self, url, path):
         if path.exists():
+            self.runtime.record({'provider': 'Meshy download', 'purpose': 'reused existing file',
+                                 'path': path.relative_to(self.runtime.output).as_posix()})
             return
         request = urllib.request.Request(url, headers={'User-Agent': 'GameFrame3D/1.0'})
         part = path.with_suffix('.part')
@@ -204,7 +208,7 @@ class Meshy:
         self.download(result['model_urls']['glb'], model)
         rig = None
         rig_input_id = task_id
-        if asset.articulated:
+        if self.config.rigging_enabled and asset.articulated:
             faces = triangle_count(model)
             # Staging rigging rejects inputs above 320,000 faces; preserve the original
             # textured surface and simplify only the provider's skeleton source.
@@ -229,4 +233,4 @@ class Meshy:
         return {'model': model.relative_to(self.runtime.output).as_posix(),
                 'rig': None if rig is None else rig.relative_to(self.runtime.output).as_posix(),
                 'sha256': hashlib.sha256(model.read_bytes()).hexdigest(), 'task_id': task_id,
-                'rig_input_task_id': rig_input_id if asset.articulated else None}
+                'rig_input_task_id': rig_input_id if rig is not None else None}

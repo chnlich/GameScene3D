@@ -214,6 +214,8 @@ def compose(job, root, destination):
         paths = assets[asset['id']]
         before = set(bpy.data.objects)
         if asset['articulated']:
+            if not paths.get('rig'):
+                raise RuntimeError('Articulated asset has no rig; enable rigging or use static reconstruction')
             collection = bpy.data.collections.new(asset['id'])
             scene.collection.children.link(collection)
             rig, meshes, report = character(str(root / paths['model']), str(root / paths['rig']), asset['id'], collection)
@@ -254,6 +256,7 @@ def compose(job, root, destination):
         error = math.dist(xy, landmark['image_xy'])
         landmarks.append(dict(landmark, projected_xy=xy, depth=projected.z, error=error))
     checks = {'geometry_bounds': geometry, 'materials': reports, 'pose': pose_checks, 'reprojection': landmarks,
+              'pose_applicable': bool(pose_checks),
               'pose_passed': all(p['error_meters'] <= settings['pose_tolerance_meters'] for p in pose_checks),
               'reprojection_passed': bool(landmarks) and all(p['depth'] > 0 and p['error'] <= settings['reprojection_tolerance'] for p in landmarks)}
     dump(destination / 'checks.json', checks)

@@ -9,9 +9,10 @@ as Python. The viewer consumes the public result, not the manifest.
 The configured inference backend identifies assets, reference crops, pose goals,
 environment, lighting and a source camera. Meshy generates independent assets
 concurrently; text assets run preview then refine, and articulated assets then run
-rigging. Blender composes and renders the scene. The backend inspects the preview
-with the original input and returns actual corrections. Inspection explicitly names
-assets to regenerate; edits to transforms, pose and lighting reuse the measured mesh.
+rigging when rigging is enabled. Blender composes and renders the scene. The backend
+inspects the preview with the original input and returns actual corrections.
+Inspection explicitly names assets to regenerate; edits to transforms, pose and
+lighting reuse the measured mesh.
 Accepted scenes are exported and reopened in another Blender
 process before returning success. Failed reconstructions keep their artifacts.
 
@@ -119,6 +120,14 @@ textures and composed bounds.
 The image-to-3D transport, rig dependency, UV-preserving transfer, IK and static
 export adapt the project's earlier manually composed Blender work. Character names,
 source-specific poses and private host paths are not part of this implementation.
+Setting `meshy.rigging_enabled: false` selects static reference-fidelity
+reconstruction: image-derived meshes keep the pose visible in their reference crop,
+rigging and remesh-for-rigging are skipped, analysis and correction output is
+normalized to static assets with each normalization recorded as evidence, pose
+checks are recorded as not applicable, and placement is verified by reprojection
+landmarks. Reference-fidelity meshes carry their source pose, so static
+reconstruction needs no rigging; corrections stay limited to transforms, camera,
+lighting and explicit mesh regeneration.
 Relevant provider references: [Codex noninteractive mode](https://developers.openai.com/codex/noninteractive),
 [Meshy image-to-3D](https://docs.meshy.ai/en/api/image-to-3d),
 [text-to-3D](https://docs.meshy.ai/en/api/text-to-3d), and
