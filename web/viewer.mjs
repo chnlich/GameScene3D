@@ -119,35 +119,26 @@ export class Viewer {
     }
     const target = new THREE.Vector3();
     if (sourceCamera === null) {
-      // Textured or skinned meshes are a display heuristic, independent of asset names.
+      // Default view: sphere-fit the content the viewer is meant to see (textured or
+      // skinned meshes; the whole model when no such subject exists) with a 15% margin.
+      // Whole-scene bounds alone would frame floor planes, shrinking the subject.
       const subject = new THREE.Box3();
       this.model.traverse(object => {
         if (!object.isMesh) return;
         const materials = Array.isArray(object.material) ? object.material : [object.material];
         if (object.isSkinnedMesh || materials.some(material => material.map)) subject.expandByObject(object, true);
       });
-      // An absent or zero-size subject cannot define a view; use all geometry instead.
-      const subjectRadius = subject.getBoundingSphere(new THREE.Sphere()).radius;
-      const frame = subjectRadius > 0 && Number.isFinite(subjectRadius) ? subject : bounds;
+      const subjectSphere = subject.getBoundingSphere(new THREE.Sphere());
+      const frame = subjectSphere.radius > 0 && Number.isFinite(subjectSphere.radius) ? subject : bounds;
+      const frameSphere = frame === subject ? subjectSphere : sphere;
       target.copy(frame.getCenter(new THREE.Vector3()));
       const halfVertical = THREE.MathUtils.degToRad(this.camera.fov / 2);
       const halfHorizontal = Math.atan(Math.tan(halfVertical) * this.aspect);
+      // Portrait canvases have a narrower horizontal fov; fit the tighter of the two.
+      const fitHalf = Math.min(halfVertical, halfHorizontal);
       const direction = new THREE.Vector3(4, 4, 14.5).normalize();
-      const right = new THREE.Vector3().crossVectors(this.camera.up, direction).normalize();
-      const up = new THREE.Vector3().crossVectors(direction, right);
-      let fitDistance = 0;
-      // Fit all eight corners in camera space, leaving 12% horizontal and 26% vertical room.
-      for (const x of [frame.min.x, frame.max.x]) {
-        for (const y of [frame.min.y, frame.max.y]) {
-          for (const z of [frame.min.z, frame.max.z]) {
-            const corner = new THREE.Vector3(x, y, z).sub(target);
-            fitDistance = Math.max(fitDistance,
-              corner.dot(direction) + Math.abs(corner.dot(right)) / (Math.tan(halfHorizontal) * 0.88),
-              corner.dot(direction) + Math.abs(corner.dot(up)) / (Math.tan(halfVertical) * 0.74));
-          }
-        }
-      }
-      this.camera.position.copy(target).addScaledVector(direction, fitDistance);
+      const distance = (frameSphere.radius / Math.sin(fitHalf)) * 1.15;
+      this.camera.position.copy(target).addScaledVector(direction, distance);
     } else {
       this.camera.position.fromArray(sourceCamera.position);
       this.camera.up.fromArray(sourceCamera.up);
